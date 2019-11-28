@@ -44,7 +44,7 @@ void FlyingStuffScene::load() {
             .withData(kulTiles, sizeof(kulTiles))
             .withSize(SIZE_64_32)
             .withLocation(100, 50)
-            .withVelocity(1, 1)
+            .withVelocity(0, 0)
             .buildPtr();
 
     player = affineBuilder
