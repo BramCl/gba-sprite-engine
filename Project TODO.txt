@@ -2,3 +2,4 @@
 
 - BRAM:  MET commandline afbeelding converten naar hexfile
 - MAIKEL: MET tile-editor een map maken, en random laten genereren zie demo 4!!!
+	MAIKEL: nieuw project aanmaken en mappen goed zetten,  CMakeListst.txt (de onderste) helemaal onderaan toevoegen
