@@ -23,7 +23,7 @@ std::vector<Background *> FlyingStuffScene::backgrounds() {
 }
 
 void FlyingStuffScene::load() {
-    foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(sharedPal, sizeof(sharedPal)));
+    foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(character_onbewerkt_transparant_16Pal, sizeof(character_onbewerkt_transparant_16Pal)));
     backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(bg_palette, sizeof(bg_palette)));
 
     SpriteBuilder<Sprite> builder;
@@ -31,7 +31,7 @@ void FlyingStuffScene::load() {
 
     player = affineBuilder
             .withData(character_onbewerkt_transparant_16Tiles, sizeof(character_onbewerkt_transparant_16Tiles))
-            .withSize(SIZE_8_8)
+            .withSize(SIZE_32_32)
             .withLocation(120, 80)
             .buildPtr();
     bg = std::unique_ptr<Background>(new Background(1, background_data, sizeof(background_data), map, sizeof(map)));
@@ -53,5 +53,6 @@ void FlyingStuffScene::tick(u16 keys) {
     } else if(keys & KEY_DOWN) {
         scrollY += 2;
     } else {
+        scrollY += 1;
     }
 }
