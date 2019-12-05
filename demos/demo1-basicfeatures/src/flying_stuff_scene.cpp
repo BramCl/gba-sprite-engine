@@ -30,8 +30,8 @@ void FlyingStuffScene::load() {
     SpriteBuilder<AffineSprite> affineBuilder;
 
     player = affineBuilder
-            .withData(piskel2Tiles, sizeof(piskel2Tiles))
-            .withSize(SIZE_16_16)
+            .withData(character_onbewerkt_transparant_16Tiles, sizeof(character_onbewerkt_transparant_16Tiles))
+            .withSize(SIZE_8_8)
             .withLocation(120, 80)
             .buildPtr();
     bg = std::unique_ptr<Background>(new Background(1, background_data, sizeof(background_data), map, sizeof(map)));
