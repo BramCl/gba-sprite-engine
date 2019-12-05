@@ -53,6 +53,5 @@ void FlyingStuffScene::tick(u16 keys) {
     } else if(keys & KEY_DOWN) {
         scrollY += 2;
     } else {
-        player->setVelocity(0, 0);
     }
 }
