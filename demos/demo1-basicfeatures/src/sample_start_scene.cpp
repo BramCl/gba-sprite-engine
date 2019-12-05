@@ -42,7 +42,7 @@ void SampleStartScene::load() {
             .withLocation(10, 10)
             .buildPtr();
 
-    TextStream::instance().setText("PRESS START", 3, 8);
+    TextStream::instance().setText("PIETERT", 3, 8);
 
     engine->getTimer()->start();
     engine->enqueueMusic(zelda_music_16K_mono, zelda_music_16K_mono_bytes);
@@ -64,11 +64,12 @@ void SampleStartScene::tick(u16 keys) {
 
             engine->transitionIntoScene(new FlyingStuffScene(engine), new FadeOutScene(2));
         }
-    } else if(keys & KEY_LEFT) {
+    } else if(keys & KEY_UP) {
         animation->flipHorizontally(true);
+        TextStream::instance() << "entered: starting next scene";
     } else if(keys & KEY_RIGHT) {
         animation->flipHorizontally(false);
-    } else if(keys & KEY_UP) {
+    } else if(keys & KEY_LEFT) {
         animation->flipVertically(true);
     } else if(keys & KEY_DOWN) {
         animation->flipVertically(false);

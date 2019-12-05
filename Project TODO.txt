@@ -1,0 +1,4 @@
+5 december 2019
+
+- BRAM:  MET commandline afbeelding converten naar hexfile
+- MAIKEL: MET tile-editor een map maken, en random laten genereren zie demo 4!!!
