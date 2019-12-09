@@ -14,6 +14,8 @@
 #include "ff.h"
 #include "sample_sound.h"
 
+#include "character_onbewerkt_transparant_16.h"
+
 std::vector<Background *> SampleStartScene::backgrounds() {
     return {};
 }
@@ -23,26 +25,27 @@ std::vector<Sprite *> SampleStartScene::sprites() {
 }
 
 void SampleStartScene::load() {
-    foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(sharedPal, sizeof(sharedPal)));
+    foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(character_onbewerkt_transparant_16Pal, sizeof(character_onbewerkt_transparant_16Pal)));
     backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager());
 
     SpriteBuilder<Sprite> builder;
 
     animation = builder
-            .withData(lamaTiles, sizeof(lamaTiles))
+            .withData(character_onbewerkt_transparant_16Tiles, sizeof(character_onbewerkt_transparant_16Tiles))
             .withSize(SIZE_32_32)
-            .withAnimated(6, 3)
             .withLocation(50, 50)
             .buildPtr();
 
+    /*
     finalFantasyGuy = builder
             .withData(lopen_jongenTiles, sizeof(lopen_jongenTiles))
             .withSize(SIZE_16_16)
             .withAnimated(2, 10)
             .withLocation(10, 10)
             .buildPtr();
-
+*/
     TextStream::instance().setText("PIETERT", 3, 8);
+
 
     engine->getTimer()->start();
     engine->enqueueMusic(zelda_music_16K_mono, zelda_music_16K_mono_bytes);

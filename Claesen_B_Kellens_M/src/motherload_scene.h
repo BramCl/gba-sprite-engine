@@ -15,7 +15,7 @@
 class MotherloadScene : public Scene {
 private:
 
-    std::unique_ptr<AffineSprite> player;
+    std::unique_ptr<Sprite> player;
     std::unique_ptr<Background> bg;
 
     int scrollX, scrollY, rotateA;

@@ -1,4 +1,3 @@
-
 //{{BLOCK(character_onbewerkt_transparant_16)
 
 //======================================================================
@@ -8,7 +7,7 @@
 //	+ 16 tiles not compressed
 //	Total size: 512 + 1024 = 1536
 //
-//	Time-stamp: 2019-12-09, 14:34:51
+//	Time-stamp: 2019-12-09, 14:36:25
 //	Exported by Cearn's GBA Image Transmogrifier, v0.8.6
 //	( http://www.coranac.com/projects/#grit )
 //

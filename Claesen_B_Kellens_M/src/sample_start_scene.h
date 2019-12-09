@@ -1,13 +1,14 @@
 //
 // Created by maike on 8/12/2019.
 //
-
+/*
 #ifndef GBA_SPRITE_ENGINE_PROJECT_SAMPLE_START_SCENE_H
 #define GBA_SPRITE_ENGINE_PROJECT_SAMPLE_START_SCENE_H
 
 
 
 #include <libgba-sprite-engine/scene.h>
+#include "kul.h"
 
 class SampleStartScene : public Scene {
 private:
@@ -29,3 +30,4 @@ public:
 
 
 #endif //GBA_SPRITE_ENGINE_SAMPLE_START_SCENE_H
+*/

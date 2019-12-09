@@ -12,7 +12,9 @@
 #include <libgba-sprite-engine/background/text_stream.h>
 #include <libgba-sprite-engine/gba/tonc_memdef.h>
 #include "motherload_scene.h"
-// HIER het mannetje #include "kul.h"
+
+#include "character_onbewerkt_transparant_16.h"
+#include "kul.h"
 
 std::vector<Sprite *> MotherloadScene::sprites() {
     return {
