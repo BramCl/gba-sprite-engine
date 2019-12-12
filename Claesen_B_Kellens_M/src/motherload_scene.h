@@ -24,7 +24,7 @@ public:
 
     std::vector<Sprite *> sprites() override;
     std::vector<Background *> backgrounds() override;
-
+    void seedRandomMap(int seedcount);
     void load() override;
     void tick(u16 keys) override;
 };
