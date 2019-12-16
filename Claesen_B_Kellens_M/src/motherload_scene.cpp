@@ -83,8 +83,10 @@ void MotherloadScene::tick(u16 keys) {
     bg.get()->scroll(scrollX, scrollY);
 
     if(keys & KEY_LEFT) {
+        scrollY += 1;
         scrollX -= 2;
     } else if(keys & KEY_RIGHT) {
+        scrollY += 1;
         scrollX += 2;
     } else if(keys & KEY_UP) {
         scrollY -= 2;
