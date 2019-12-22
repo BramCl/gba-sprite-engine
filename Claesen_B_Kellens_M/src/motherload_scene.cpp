@@ -40,7 +40,6 @@ void MotherloadScene::load() {
     foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(character_onbewerkt_transparant_16Pal, sizeof(character_onbewerkt_transparant_16Pal)));
     backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(pal_bg_mother, sizeof(pal_bg_mother)));
 
-    SpriteBuilder<Sprite> builder;
     SpriteBuilder<AffineSprite> affineBuilder;
 
     player = affineBuilder
@@ -48,6 +47,7 @@ void MotherloadScene::load() {
             .withSize(SIZE_32_32)
             .withLocation(120, 80)
             .buildPtr();
+    seedRandomMap(MAP_WIDTH * MAP_HEIGHT);
     bg = std::unique_ptr<Background>(new Background(1, dirt__4_Tiles, sizeof(dirt__4_Tiles), map, sizeof(map)));
     bg.get()->useMapScreenBlock(16);
 }
@@ -67,10 +67,22 @@ void MotherloadScene::load() {
  */
 
 void MotherloadScene::seedRandomMap(int seedcount) {
-    for(int i = 0; i < seedcount; i++) {
-        int x = qran_range(0, 32);
-        int y = qran_range(0, 64);
-        //map[y * 32 + x] = ALIVE;
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            //int x = qran_range(0, 32);
+            //int y = qran_range(0, 64);
+            //map[y * 32 + x] = BROWNBGTILE;
+            int i = qran_range(0, 3);
+            if(i == 0) {
+                map[y * MAP_WIDTH + x] = DIRT;
+            }
+            else if(i == 1){
+                map[y * MAP_WIDTH + x] = BROWNBGTILE;
+            }
+            else {
+                map[y * MAP_WIDTH + x] = AIR;
+            }
+        }
     }
 }
 
@@ -82,17 +94,17 @@ void MotherloadScene::tick(u16 keys) {
 
     bg.get()->scroll(scrollX, scrollY);
 
+    scrollY += 1;
     if(keys & KEY_LEFT) {
-        scrollY += 1;
         scrollX -= 2;
-    } else if(keys & KEY_RIGHT) {
-        scrollY += 1;
+    }
+    if(keys & KEY_RIGHT) {
         scrollX += 2;
-    } else if(keys & KEY_UP) {
-        scrollY -= 2;
-    } else if(keys & KEY_DOWN) {
+    }
+    if(keys & KEY_UP) {
+        scrollY -= 3;
+    }
+    if(keys & KEY_DOWN) {
         scrollY += 2;
-    } else {
-        scrollY += 1;
     }
 }

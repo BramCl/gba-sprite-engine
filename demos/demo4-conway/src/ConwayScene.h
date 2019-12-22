@@ -12,8 +12,8 @@
 #define MAP_HEIGHT GBA_SCREEN_HEIGHT / 8
 #define MAP_SIZE MAP_WIDTH * MAP_HEIGHT
 
-#define ALIVE 0x0001
-#define DEAD  0x0000
+#define ALIVE 0x0002
+#define DEAD  0x0001
 
 class ConwayScene : public Scene {
 protected:

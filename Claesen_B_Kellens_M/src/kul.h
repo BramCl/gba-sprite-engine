@@ -597,6 +597,7 @@ const unsigned short map [] = {
 
 
 
+
 const unsigned short bg_pal[18] __attribute__((aligned(4)))=
         {
                 0x55A3,0x00EE,0x0CC9,0x1D4C,0x150B,0x216F,0x192C,0x190A,
