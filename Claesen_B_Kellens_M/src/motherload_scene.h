@@ -6,7 +6,8 @@
 #define GBA_SPRITE_ENGINE_PROJECT_MOTHERLOAD_SCENE_H
 #define MAP_WIDTH 32
 #define MAP_HEIGHT 32
-#define MAP_SIZE MAP_WIDTH * MAP_HEIGHT
+#define MAP_SIZE (MAP_WIDTH * MAP_HEIGHT)
+#define FULL_MAP_SIZE (MAP_WIDTH * MAP_HEIGHT * 8)
 
 #define DIRT 0x000C
 #define BROWNBGTILE  0x000E
@@ -23,7 +24,8 @@ private:
 
     std::unique_ptr<Sprite> player;
     std::unique_ptr<Background> bg;
-    u16 map[MAP_SIZE] = {DIRT}, buffer[MAP_SIZE] = {DIRT};
+    u16 map[MAP_SIZE] = {};
+    u16 fullMap[FULL_MAP_SIZE] = {};
 
     int scrollX, scrollY, rotateA;
 public:
