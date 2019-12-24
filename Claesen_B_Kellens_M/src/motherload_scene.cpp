@@ -47,8 +47,13 @@ void MotherloadScene::load() {
             .withSize(SIZE_32_32)
             .withLocation(112, 8)
             .buildPtr();
+<<<<<<< HEAD
     seedRandomMap(MAP_WIDTH * MAP_HEIGHT);
     bg = std::unique_ptr<Background>(new Background(1, dirt_4_Tiles, sizeof(dirt_4_Tiles), map, sizeof(map)));
+=======
+    seedRandomMap();
+    bg = std::unique_ptr<Background>(new Background(1, dirt__4_Tiles, sizeof(dirt__4_Tiles), map, sizeof(map)));
+>>>>>>> 4357f180f7f2f670ff8aecfd1e653c581f2e05dc
     bg.get()->useMapScreenBlock(16);
 }
 
@@ -70,21 +75,28 @@ void MotherloadScene::seedRandomMap(int seedcount) {
 
     for (int x = 0; x < MAP_WIDTH; x++) {
         for (int y = 5; y < MAP_HEIGHT; y++) {
+        for (int y = 5; y < FULL_MAP_HEIGHT; y++) {
             //int x = qran_range(0, 32);
             //int y = qran_range(0, 64);
             //map[y * 32 + x] = BROWNBGTILE;
             int i = qran_range(0, 5);
             if(i == 0){
                 map[y * MAP_WIDTH + x] = BROWNBGTILE;
+                fullMap[y * MAP_WIDTH + x] = BROWNBGTILE;
             }
             else {
                 map[y * MAP_WIDTH + x] = DIRT;
+                fullMap[y * MAP_WIDTH + x] = DIRT;
             }
         }
         for (int y = 0; y < 5; y++)
             map[y* MAP_WIDTH + x] = AIR;
+            fullMap[y* MAP_WIDTH + x] = AIR;
     }
 
+    for(int i = 0; i <MAP_SIZE; i++){
+        map[i]= fullMap[i];
+    }
 }
 
 

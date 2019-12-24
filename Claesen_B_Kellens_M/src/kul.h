@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
 
 const unsigned short sharedPal[84] __attribute__((aligned(4)))=
@@ -376,6 +377,8 @@ const unsigned char background_map [] = {
 
 };
 
+=======
+>>>>>>> 4357f180f7f2f670ff8aecfd1e653c581f2e05dc
 #ifndef GRIT_TILES_H
 #define GRIT_TILES_H
 
@@ -593,6 +596,7 @@ const unsigned short map [] = {
         0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
         0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
         0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
+<<<<<<< HEAD
 };
 
 
@@ -753,4 +757,7 @@ const unsigned short character_onbewerkt_transparant_16Pal2[256] __attribute__((
                 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
                 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
         };
-*/
+*/*/
+=======
+};
+>>>>>>> 4357f180f7f2f670ff8aecfd1e653c581f2e05dc
