@@ -67,6 +67,7 @@ void MotherloadScene::load() {
  */
 
 void MotherloadScene::seedRandomMap(int seedcount) {
+    /*
     for (int y = 0; y < MAP_HEIGHT; y++) {
         for (int x = 0; x < MAP_WIDTH; x++) {
             //int x = qran_range(0, 32);
@@ -84,6 +85,10 @@ void MotherloadScene::seedRandomMap(int seedcount) {
             }
         }
     }
+     */
+    int x = 29;
+    int y = 0;
+    map[y*MAP_WIDTH+x] = DIRT;
 }
 
 
@@ -92,7 +97,7 @@ void MotherloadScene::tick(u16 keys) {
 
     TextStream::instance().setText(std::to_string(-scrollY), 0, 0);
 
-    bg.get()->scroll(scrollX, scrollY);
+    //bg.get()->scroll(scrollX, scrollY);
 
     scrollY += 1;
     if(keys & KEY_LEFT) {
