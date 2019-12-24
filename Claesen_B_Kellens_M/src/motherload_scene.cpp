@@ -85,18 +85,19 @@ void MotherloadScene::seedRandomMap() {
             fullMap[y* MAP_WIDTH + x] = AIR;
     }
 
-    for(int i = 0; i <MAP_SIZE; i++){
-        map[i]= fullMap[i];
-    }
+
 }
 
 
 ///
 void MotherloadScene::tick(u16 keys) {
-
+    for(int i = 0; i <MAP_SIZE; i++){
+        map[i]= fullMap[i+scrollY*MAP_WIDTH/8];
+    }
     TextStream::instance().setText(std::to_string(-scrollY), 0, 0);
 
     bg.get()->scroll(scrollX, scrollY);
+    bg.get()->updateMap(map);
 
     scrollY += 0;
     if(keys & KEY_LEFT) {
