@@ -74,23 +74,19 @@ void MotherloadScene::load() {
 void MotherloadScene::seedRandomMap(int seedcount) {
 
     for (int x = 0; x < MAP_WIDTH; x++) {
-        for (int y = 5; y < MAP_HEIGHT; y++) {
         for (int y = 5; y < FULL_MAP_HEIGHT; y++) {
             //int x = qran_range(0, 32);
             //int y = qran_range(0, 64);
             //map[y * 32 + x] = BROWNBGTILE;
             int i = qran_range(0, 5);
             if(i == 0){
-                map[y * MAP_WIDTH + x] = BROWNBGTILE;
                 fullMap[y * MAP_WIDTH + x] = BROWNBGTILE;
             }
             else {
-                map[y * MAP_WIDTH + x] = DIRT;
                 fullMap[y * MAP_WIDTH + x] = DIRT;
             }
         }
         for (int y = 0; y < 5; y++)
-            map[y* MAP_WIDTH + x] = AIR;
             fullMap[y* MAP_WIDTH + x] = AIR;
     }
 

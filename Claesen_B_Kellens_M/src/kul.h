@@ -382,9 +382,6 @@ const unsigned char background_map [] = {
 #ifndef GRIT_TILES_H
 #define GRIT_TILES_H
 
-#define tilesTilesLen 65536
-extern const unsigned int tilesTiles[16384];
-
 #endif // GRIT_TILES_H
 
 //}}BLOCK(tiles)
@@ -757,7 +754,7 @@ const unsigned short character_onbewerkt_transparant_16Pal2[256] __attribute__((
                 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
                 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
         };
-*/*/
+*/
 =======
 };
 >>>>>>> 4357f180f7f2f670ff8aecfd1e653c581f2e05dc
