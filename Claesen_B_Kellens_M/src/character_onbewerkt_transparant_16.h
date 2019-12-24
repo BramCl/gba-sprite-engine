@@ -12,7 +12,7 @@
 //	( http://www.coranac.com/projects/#grit )
 //
 //======================================================================
-
+/*
 const unsigned short character_onbewerkt_transparant_16Tiles[512] __attribute__((aligned(4)))=
 {
 	0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
@@ -128,3 +128,4 @@ const unsigned short character_onbewerkt_transparant_16Pal[256] __attribute__((a
 };
 
 //}}BLOCK(character_onbewerkt_transparant_16)
+*/

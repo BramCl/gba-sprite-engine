@@ -18,6 +18,7 @@
 #include "character_onbewerkt_transparant_16.h"
 #include "kul.h"
 #include "backgroundblocks.h"
+#include "digger.h"
 
 int __qran_seed= 42;     // Seed / rnd holder
 
@@ -37,18 +38,18 @@ std::vector<Background *> MotherloadScene::backgrounds() {
 
 // HIER HET ROOD DE KARAKTERS NOG
 void MotherloadScene::load() {
-    foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(character_onbewerkt_transparant_16Pal, sizeof(character_onbewerkt_transparant_16Pal)));
-    backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(bg_Tiles, sizeof(bg_Tiles)));
+    foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(diggerPal, sizeof(diggerPal)));
+    backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(bg_big_Pal, sizeof(bg_big_Pal)));
     update = true;
     SpriteBuilder<AffineSprite> affineBuilder;
 
     player = affineBuilder
-            .withData(character_onbewerkt_transparant_16Tiles, sizeof(character_onbewerkt_transparant_16Tiles))
+            .withData(digger, sizeof(digger))
             .withSize(SIZE_32_32)
             .withLocation(112, 8)
             .buildPtr();
     seedRandomMap();
-    bg = std::unique_ptr<Background>(new Background(1, dirt_4_Tiles, sizeof(dirt_4_Tiles), map, sizeof(map)));
+    bg = std::unique_ptr<Background>(new Background(1, dirt_bigTiles, sizeof(dirt_bigTiles), map, sizeof(map)));
 
     bg.get()->useMapScreenBlock(16);
 }
@@ -108,16 +109,20 @@ void MotherloadScene::tick(u16 keys) {
 
     if(fullMap[(14+scrollX/8)+(4+scrollY/8)*MAP_WIDTH] == AIR && keys & KEY_LEFT) {
             scrollX -= 2;
+            player->animateToFrame(0);
     }
     if(fullMap[(16+scrollX/8)+(4+scrollY/8)*MAP_WIDTH] == AIR && keys & KEY_RIGHT) {
             scrollX += 2;
+        player->animateToFrame(2);
     }
     if(fullMap[(15+scrollX/8)+(3+scrollY/8)*MAP_WIDTH] == AIR && keys & KEY_UP) {
             scrollY -= 2;
+        player->animateToFrame(1);
     }
     if(fullMap[(15+scrollX/8)+(5+scrollY/8)*MAP_WIDTH] == AIR) {
         if (keys & KEY_DOWN) {
             scrollY += 1;
+            player->animateToFrame(3);
         }
         scrollY += 1;
     }
