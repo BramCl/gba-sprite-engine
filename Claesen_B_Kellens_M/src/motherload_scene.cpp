@@ -46,7 +46,7 @@ void MotherloadScene::load() {
     player = affineBuilder
             .withData(digger, sizeof(digger))
             .withSize(SIZE_32_32)
-            .withLocation(112, 8)
+            .withLocation(110, 16)
             .buildPtr();
     seedRandomMap();
     bg = std::unique_ptr<Background>(new Background(1, dirt_bigTiles, sizeof(dirt_bigTiles), map, sizeof(map)));
@@ -67,20 +67,42 @@ void MotherloadScene::load() {
    // postload();
 }
  */
-
+bool MotherloadScene::blockIsClear(int upperLeftX, int upperLeftY) {
+    if (scrollY % 16 >=8) {
+        return true;
+    } else {
+        if (fullMap[(upperLeftX + scrollX / 8) + (upperLeftY + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE &&
+            fullMap[(upperLeftX + 1 + scrollX / 8) + (upperLeftY + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE &&
+            fullMap[(upperLeftX + scrollX / 8) + (upperLeftY + 1 + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE &&
+            fullMap[(upperLeftX + 1 + scrollX / 8) + (upperLeftY + 1 + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE) {
+            return true;
+        } else if (fullMap[(upperLeftX + scrollX / 8) + (upperLeftY + scrollY / 8) * MAP_WIDTH] == AIR &&
+                   fullMap[(upperLeftX + 1 + scrollX / 8) + (upperLeftY + scrollY / 8) * MAP_WIDTH] == AIR &&
+                   fullMap[(upperLeftX + scrollX / 8) + (upperLeftY + 1 + scrollY / 8) * MAP_WIDTH] == AIR &&
+                   fullMap[(upperLeftX + 1 + scrollX / 8) + (upperLeftY + 1 + scrollY / 8) * MAP_WIDTH] == AIR) {
+            return true;
+        } else return false;
+    }
+}
 void MotherloadScene::seedRandomMap() {
 
-    for (int x = 0; x < MAP_WIDTH; x++) {
-        for (int y = 5; y < FULL_MAP_HEIGHT; y++) {
-            int i = qran_range(0, 5);
+    for (int x = 0; x < MAP_WIDTH; x += 2) {
+        for (int y = 6; y < FULL_MAP_HEIGHT; y += 2) {
+            int i = qran_range(0, 6);
             if(i == 0){
                 fullMap[y * MAP_WIDTH + x] = BROWNBGTILE;
+                fullMap[y * MAP_WIDTH + (x+1)] = BROWNBGTILE;
+                fullMap[(y+1) * MAP_WIDTH + x] = BROWNBGTILE;
+                fullMap[(y+1) * MAP_WIDTH + (x+1)] = BROWNBGTILE;
             }
             else {
-                fullMap[y * MAP_WIDTH + x] = DIRT;
+                fullMap[y * MAP_WIDTH + x] = DIRT_LB;
+                fullMap[y * MAP_WIDTH + (x+1)] = DIRT_RB;
+                fullMap[(y+1) * MAP_WIDTH + x] = DIRT_LO;
+                fullMap[(y+1) * MAP_WIDTH + (x+1)] = DIRT_RO;
             }
         }
-        for (int y = 0; y < 5; y++)
+        for (int y = 0; y < 6; y++)
             fullMap[y* MAP_WIDTH + x] = AIR;
     }
 
@@ -107,31 +129,38 @@ void MotherloadScene::tick(u16 keys) {
     bg.get()->scroll(scrollX, 0);
     bg.get()->updateMap(map);
 
-    if(fullMap[(14+scrollX/8)+(4+scrollY/8)*MAP_WIDTH] == AIR && keys & KEY_LEFT) {
+    if(blockIsClear(13,4) && keys & KEY_LEFT) {
             scrollX -= 2;
             player->animateToFrame(0);
     }
-    if(fullMap[(16+scrollX/8)+(4+scrollY/8)*MAP_WIDTH] == AIR && keys & KEY_RIGHT) {
+    if(blockIsClear(17,4) && keys & KEY_RIGHT) {
             scrollX += 2;
         player->animateToFrame(2);
     }
-    if(fullMap[(15+scrollX/8)+(3+scrollY/8)*MAP_WIDTH] == AIR && keys & KEY_UP) {
+    if(keys & KEY_UP && blockIsClear(15,2)) {
             scrollY -= 2;
         player->animateToFrame(1);
     }
-    if(fullMap[(15+scrollX/8)+(5+scrollY/8)*MAP_WIDTH] == AIR) {
+    if(blockIsClear(15,6)) {
         if (keys & KEY_DOWN) {
             scrollY += 1;
             player->animateToFrame(3);
         }
         scrollY += 1;
     }
-    if(fullMap[(15+scrollX/8)+(5+scrollY/8)*MAP_WIDTH] != AIR){
-        if (keys & KEY_DOWN) {
-            fullMap[(15 + scrollX / 8) + ((5 + scrollY / 8) * MAP_WIDTH)] = AIR;
+    if(keys & KEY_DOWN){
+        while(scrollX % 16 <=8){
+            scrollX++;
+        }
+        if (!blockIsClear(15,6)) {
+            fullMap[(15 + scrollX / 8) + ((6 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
+            fullMap[(16 + scrollX / 8) + ((6 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
+            fullMap[(15 + scrollX / 8) + ((7 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
+            fullMap[(16 + scrollX / 8) + ((7 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
             updateMap();
         }
     }
+
     if(scrollY < 0){
         scrollY = 0;
     }
