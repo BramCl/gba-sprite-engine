@@ -39,7 +39,7 @@ std::vector<Background *> MotherloadScene::backgrounds() {
 void MotherloadScene::load() {
     foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(character_onbewerkt_transparant_16Pal, sizeof(character_onbewerkt_transparant_16Pal)));
     backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(bg_Tiles, sizeof(bg_Tiles)));
-
+    update = true;
     SpriteBuilder<AffineSprite> affineBuilder;
 
     player = affineBuilder
@@ -71,9 +71,6 @@ void MotherloadScene::seedRandomMap() {
 
     for (int x = 0; x < MAP_WIDTH; x++) {
         for (int y = 5; y < FULL_MAP_HEIGHT; y++) {
-            //int x = qran_range(0, 32);
-            //int y = qran_range(0, 64);
-            //map[y * 32 + x] = BROWNBGTILE;
             int i = qran_range(0, 5);
             if(i == 0){
                 fullMap[y * MAP_WIDTH + x] = BROWNBGTILE;
@@ -90,27 +87,47 @@ void MotherloadScene::seedRandomMap() {
 }
 
 
-///
-void MotherloadScene::tick(u16 keys) {
+void MotherloadScene::updateMap(){
     for(int i = 0; i <MAP_SIZE; i++){
-        map[i]= fullMap[i+scrollY*MAP_WIDTH/8];
+        map[i]= fullMap[i+(scrollY/8)*MAP_WIDTH];
+    }
+}
+void MotherloadScene::tick(u16 keys) {
+    if((scrollY % 8) == 0 && lastUpdate != scrollY){
+        update = true;
+        lastUpdate = scrollY;
+    }
+    if(update) {
+        updateMap();
+        update = !update;
     }
     TextStream::instance().setText(std::to_string(-scrollY), 0, 0);
 
     bg.get()->scroll(scrollX, scrollY);
     bg.get()->updateMap(map);
 
-    scrollY += 0;
-    if(keys & KEY_LEFT) {
-        scrollX -= 2;
+    if(fullMap[(14+scrollX/8)+(4+scrollY/8)*MAP_WIDTH] == AIR && keys & KEY_LEFT) {
+            scrollX -= 2;
     }
-    if(keys & KEY_RIGHT) {
-        scrollX += 2;
+    if(fullMap[(16+scrollX/8)+(4+scrollY/8)*MAP_WIDTH] == AIR && keys & KEY_RIGHT) {
+            scrollX += 2;
     }
-    if(keys & KEY_UP) {
-        scrollY -= 3;
+    if(fullMap[(15+scrollX/8)+(3+scrollY/8)*MAP_WIDTH] == AIR && keys & KEY_UP) {
+            scrollY -= 2;
     }
-    if(keys & KEY_DOWN) {
-        scrollY += 2;
+    if(fullMap[(15+scrollX/8)+(5+scrollY/8)*MAP_WIDTH] == AIR) {
+        if (keys & KEY_DOWN) {
+            scrollY += 1;
+        }
+        scrollY += 1;
+    }
+    if(fullMap[(15+scrollX/8)+(5+scrollY/8)*MAP_WIDTH] != AIR){
+        if (keys & KEY_DOWN) {
+            fullMap[(15 + scrollX / 8) + ((5 + scrollY / 8) * MAP_WIDTH)] = AIR;
+            updateMap();
+        }
+    }
+    if(scrollY < 0){
+        scrollY = 0;
     }
 }

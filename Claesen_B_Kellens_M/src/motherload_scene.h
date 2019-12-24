@@ -28,13 +28,15 @@ private:
     u16 map[MAP_SIZE] = {};
     u16 fullMap[FULL_MAP_SIZE] = {};
 
-    int scrollX, scrollY, rotateA;
+    int scrollX, scrollY, rotateA, lastUpdate;
+    bool update;
 public:
     MotherloadScene(std::shared_ptr<GBAEngine> engine) : Scene(engine), scrollX(0), scrollY(0), rotateA(0) {}
 
     std::vector<Sprite *> sprites() override;
     std::vector<Background *> backgrounds() override;
     void seedRandomMap();
+    void updateMap();
     void load() override;
     void tick(u16 keys) override;
 };
