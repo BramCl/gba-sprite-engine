@@ -45,7 +45,7 @@ void MotherloadScene::load() {
     player = affineBuilder
             .withData(character_onbewerkt_transparant_16Tiles, sizeof(character_onbewerkt_transparant_16Tiles))
             .withSize(SIZE_32_32)
-            .withLocation(120, 80)
+            .withLocation(112, 8)
             .buildPtr();
     seedRandomMap(MAP_WIDTH * MAP_HEIGHT);
     bg = std::unique_ptr<Background>(new Background(1, dirt__4_Tiles, sizeof(dirt__4_Tiles), map, sizeof(map)));
@@ -67,28 +67,24 @@ void MotherloadScene::load() {
  */
 
 void MotherloadScene::seedRandomMap(int seedcount) {
-    /*
-    for (int y = 0; y < MAP_HEIGHT; y++) {
-        for (int x = 0; x < MAP_WIDTH; x++) {
+
+    for (int x = 0; x < MAP_WIDTH; x++) {
+        for (int y = 5; y < MAP_HEIGHT; y++) {
             //int x = qran_range(0, 32);
             //int y = qran_range(0, 64);
             //map[y * 32 + x] = BROWNBGTILE;
-            int i = qran_range(0, 3);
-            if(i == 0) {
-                map[y * MAP_WIDTH + x] = DIRT;
-            }
-            else if(i == 1){
+            int i = qran_range(0, 5);
+            if(i == 0){
                 map[y * MAP_WIDTH + x] = BROWNBGTILE;
             }
             else {
-                map[y * MAP_WIDTH + x] = AIR;
+                map[y * MAP_WIDTH + x] = DIRT;
             }
         }
+        for (int y = 0; y < 5; y++)
+            map[y* MAP_WIDTH + x] = AIR;
     }
-     */
-    int x = 29;
-    int y = 0;
-    map[y*MAP_WIDTH+x] = DIRT;
+
 }
 
 
@@ -97,9 +93,9 @@ void MotherloadScene::tick(u16 keys) {
 
     TextStream::instance().setText(std::to_string(-scrollY), 0, 0);
 
-    //bg.get()->scroll(scrollX, scrollY);
+    bg.get()->scroll(scrollX, scrollY);
 
-    scrollY += 1;
+    scrollY += 0;
     if(keys & KEY_LEFT) {
         scrollX -= 2;
     }

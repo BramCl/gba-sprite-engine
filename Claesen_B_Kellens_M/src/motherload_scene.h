@@ -4,13 +4,13 @@
 
 #ifndef GBA_SPRITE_ENGINE_PROJECT_MOTHERLOAD_SCENE_H
 #define GBA_SPRITE_ENGINE_PROJECT_MOTHERLOAD_SCENE_H
-#define MAP_WIDTH 30
-#define MAP_HEIGHT 20
+#define MAP_WIDTH 32
+#define MAP_HEIGHT 32
 #define MAP_SIZE MAP_WIDTH * MAP_HEIGHT
 
 #define DIRT 0x000C
-#define BROWNBGTILE  0x000D
-#define AIR 0x000B
+#define BROWNBGTILE  0x000E
+#define AIR 0x000D
 
 #include <libgba-sprite-engine/sprites/sprite.h>
 #include <libgba-sprite-engine/sprites/affine_sprite.h>
