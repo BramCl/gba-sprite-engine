@@ -38,7 +38,7 @@ std::vector<Background *> MotherloadScene::backgrounds() {
 // HIER HET ROOD DE KARAKTERS NOG
 void MotherloadScene::load() {
     foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(character_onbewerkt_transparant_16Pal, sizeof(character_onbewerkt_transparant_16Pal)));
-    backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(pal_bg_mother, sizeof(pal_bg_mother)));
+    backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(bg_Tiles, sizeof(bg_Tiles)));
 
     SpriteBuilder<AffineSprite> affineBuilder;
 
