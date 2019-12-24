@@ -103,7 +103,7 @@ void MotherloadScene::tick(u16 keys) {
     }
     TextStream::instance().setText(std::to_string(-scrollY), 0, 0);
 
-    bg.get()->scroll(scrollX, scrollY);
+    bg.get()->scroll(scrollX, 0);
     bg.get()->updateMap(map);
 
     if(fullMap[(14+scrollX/8)+(4+scrollY/8)*MAP_WIDTH] == AIR && keys & KEY_LEFT) {
