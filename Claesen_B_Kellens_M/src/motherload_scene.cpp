@@ -48,7 +48,7 @@ void MotherloadScene::load() {
             .withLocation(112, 8)
             .buildPtr();
     seedRandomMap(MAP_WIDTH * MAP_HEIGHT);
-    bg = std::unique_ptr<Background>(new Background(1, dirt__4_Tiles, sizeof(dirt__4_Tiles), map, sizeof(map)));
+    bg = std::unique_ptr<Background>(new Background(1, dirt_4_Tiles, sizeof(dirt_4_Tiles), map, sizeof(map)));
     bg.get()->useMapScreenBlock(16);
 }
 

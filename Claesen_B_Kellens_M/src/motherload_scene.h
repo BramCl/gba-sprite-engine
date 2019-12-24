@@ -10,7 +10,7 @@
 
 #define DIRT 0x000C
 #define BROWNBGTILE  0x000E
-#define AIR 0x000D
+#define AIR 0x0000
 
 #include <libgba-sprite-engine/sprites/sprite.h>
 #include <libgba-sprite-engine/sprites/affine_sprite.h>

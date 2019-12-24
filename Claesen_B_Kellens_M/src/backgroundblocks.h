@@ -33,7 +33,7 @@ extern const unsigned int hared_cTiles[256];
 //
 //======================================================================
 
-const unsigned int hared_cTiles[256] __attribute__((aligned(4)))=
+const unsigned int dirt_4_Tiles[256] __attribute__((aligned(4)))=
         {
                 0x01010101,0x01010101,0x01010101,0x01010101,0x01010101,0x01010101,0x01010101,0x01010101,
                 0x01010101,0x01010101,0x01010101,0x01010101,0x01010101,0x01010101,0x01010101,0x01010101,

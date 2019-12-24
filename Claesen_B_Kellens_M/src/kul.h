@@ -1,4 +1,4 @@
-
+/*
 
 const unsigned short sharedPal[84] __attribute__((aligned(4)))=
         {
@@ -429,6 +429,7 @@ extern const unsigned int tilesTiles[16384];
 //	( http://www.coranac.com/projects/#grit )
 //
 //======================================================================
+/*
 const unsigned int dirt__4_Tiles[256] __attribute__((aligned(4)))=
         {
                 0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,
@@ -470,7 +471,7 @@ const unsigned int dirt__4_Tiles[256] __attribute__((aligned(4)))=
 
 //}}BLOCK(dirt__4_)
 
-
+*/
 /* created by GBA Tile Editor
    regular map */
 
@@ -597,7 +598,7 @@ const unsigned short map [] = {
 
 
 
-
+/*
 const unsigned short bg_pal[18] __attribute__((aligned(4)))=
         {
                 0x55A3,0x00EE,0x0CC9,0x1D4C,0x150B,0x216F,0x192C,0x190A,
@@ -752,3 +753,4 @@ const unsigned short character_onbewerkt_transparant_16Pal2[256] __attribute__((
                 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
                 0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
         };
+*/
