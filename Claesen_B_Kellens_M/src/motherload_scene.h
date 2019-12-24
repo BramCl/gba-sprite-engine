@@ -6,7 +6,6 @@
 #define GBA_SPRITE_ENGINE_PROJECT_MOTHERLOAD_SCENE_H
 #define MAP_WIDTH 32
 #define MAP_HEIGHT 32
-#define MAP_SIZE MAP_WIDTH * MAP_HEIGHT
 #define FULL_MAP_HEIGHT (MAP_HEIGHT*8)
 #define MAP_SIZE (MAP_WIDTH * MAP_HEIGHT)
 #define FULL_MAP_SIZE (MAP_WIDTH * FULL_MAP_HEIGHT)
@@ -26,7 +25,6 @@ private:
 
     std::unique_ptr<Sprite> player;
     std::unique_ptr<Background> bg;
-    u16 map[MAP_SIZE] = {DIRT}, buffer[MAP_SIZE] = {DIRT};
     u16 map[MAP_SIZE] = {};
     u16 fullMap[FULL_MAP_SIZE] = {};
 
@@ -36,7 +34,6 @@ public:
 
     std::vector<Sprite *> sprites() override;
     std::vector<Background *> backgrounds() override;
-    void seedRandomMap(int seedcount);
     void seedRandomMap();
     void load() override;
     void tick(u16 keys) override;
