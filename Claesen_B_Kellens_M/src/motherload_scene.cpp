@@ -46,7 +46,7 @@ void MotherloadScene::load() {
     player = affineBuilder
             .withData(digger, sizeof(digger))
             .withSize(SIZE_32_32)
-            .withLocation(110, 16)
+            .withLocation(112, 18)
             .buildPtr();
     seedRandomMap();
     bg = std::unique_ptr<Background>(new Background(1, dirt_bigTiles, sizeof(dirt_bigTiles), map, sizeof(map)));
@@ -68,21 +68,20 @@ void MotherloadScene::load() {
 }
  */
 bool MotherloadScene::blockIsClear(int upperLeftX, int upperLeftY) {
-    if (scrollY % 16 >=8) {
-        return true;
-    } else {
-        if (fullMap[(upperLeftX + scrollX / 8) + (upperLeftY + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE &&
-            fullMap[(upperLeftX + 1 + scrollX / 8) + (upperLeftY + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE &&
-            fullMap[(upperLeftX + scrollX / 8) + (upperLeftY + 1 + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE &&
-            fullMap[(upperLeftX + 1 + scrollX / 8) + (upperLeftY + 1 + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE) {
-            return true;
-        } else if (fullMap[(upperLeftX + scrollX / 8) + (upperLeftY + scrollY / 8) * MAP_WIDTH] == AIR &&
-                   fullMap[(upperLeftX + 1 + scrollX / 8) + (upperLeftY + scrollY / 8) * MAP_WIDTH] == AIR &&
-                   fullMap[(upperLeftX + scrollX / 8) + (upperLeftY + 1 + scrollY / 8) * MAP_WIDTH] == AIR &&
-                   fullMap[(upperLeftX + 1 + scrollX / 8) + (upperLeftY + 1 + scrollY / 8) * MAP_WIDTH] == AIR) {
-            return true;
-        } else return false;
+    if((2 + scrollY / 8)%2 != 0){
+        scrollY++;
     }
+    if (fullMap[(upperLeftX + scrollX / 8) + (upperLeftY + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE &&
+        fullMap[(upperLeftX + 1 + scrollX / 8) + (upperLeftY + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE &&
+        fullMap[(upperLeftX + scrollX / 8) + (upperLeftY + 1 + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE &&
+        fullMap[(upperLeftX + 1 + scrollX / 8) + (upperLeftY + 1 + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE) {
+        return true;
+    } else
+        return fullMap[(upperLeftX + scrollX / 8) + (upperLeftY + scrollY / 8) * MAP_WIDTH] == AIR &&
+               fullMap[(upperLeftX + 1 + scrollX / 8) + (upperLeftY + scrollY / 8) * MAP_WIDTH] == AIR &&
+               fullMap[(upperLeftX + scrollX / 8) + (upperLeftY + 1 + scrollY / 8) * MAP_WIDTH] == AIR &&
+               fullMap[(upperLeftX + 1 + scrollX / 8) + (upperLeftY + 1 + scrollY / 8) * MAP_WIDTH] == AIR;
+
 }
 void MotherloadScene::seedRandomMap() {
 
@@ -129,17 +128,32 @@ void MotherloadScene::tick(u16 keys) {
     bg.get()->scroll(scrollX, 0);
     bg.get()->updateMap(map);
 
-    if(blockIsClear(13,4) && keys & KEY_LEFT) {
+    if (keys & KEY_LEFT) {
+        while((13 + scrollX / 8)%2 != 0){
+            scrollX--;
+        }
+        if (blockIsClear(13, 4)) {
             scrollX -= 2;
             player->animateToFrame(0);
+        }
     }
-    if(blockIsClear(17,4) && keys & KEY_RIGHT) {
+    if (keys & KEY_RIGHT) {
+        while((17 + scrollX / 8)%2 != 0){
+            scrollX++;
+        }
+        if (blockIsClear(17, 4)) {
             scrollX += 2;
-        player->animateToFrame(2);
+            player->animateToFrame(2);
+        }
     }
-    if(keys & KEY_UP && blockIsClear(15,2)) {
+    if (keys & KEY_UP) {
+        while((2 + scrollY / 8)%2 != 0){
+            scrollY--;
+        }
+        if (blockIsClear(15, 2)) {
             scrollY -= 2;
-        player->animateToFrame(1);
+            player->animateToFrame(1);
+        }
     }
     if(blockIsClear(15,6)) {
         if (keys & KEY_DOWN) {
@@ -149,9 +163,10 @@ void MotherloadScene::tick(u16 keys) {
         scrollY += 1;
     }
     if(keys & KEY_DOWN){
-        while(scrollX % 16 <=8){
-            scrollX++;
+        while((15 + scrollX / 8)%2 != 0){
+            scrollX--;
         }
+
         if (!blockIsClear(15,6)) {
             fullMap[(15 + scrollX / 8) + ((6 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
             fullMap[(16 + scrollX / 8) + ((6 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
