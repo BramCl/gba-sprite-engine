@@ -10,10 +10,46 @@
 #define MAP_SIZE (MAP_WIDTH * MAP_HEIGHT)
 #define FULL_MAP_SIZE (MAP_WIDTH * FULL_MAP_HEIGHT)
 
+#define LAVA_LB 0x0010
+#define LAVA_RB 0x0011
+#define LAVA_LO 0x0018
+#define LAVA_RO 0x0019
+
 #define DIRT_LB 0x0030
 #define DIRT_RB 0x0031
 #define DIRT_LO 0x0038
 #define DIRT_RO 0x0039
+
+#define GOLD_LB 0x0020
+#define GOLD_RB 0x0021
+#define GOLD_LO 0x0028
+#define GOLD_RO 0x0029
+
+#define IRON_LB 0x0022
+#define IRON_RB 0x0023
+#define IRON_LO 0x002A
+#define IRON_RO 0x002B
+
+#define COPPER_LB 0x0024
+#define COPPER_RB 0x0025
+#define COPPER_LO 0x002C
+#define COPPER_RO 0x002D
+
+#define EMERALD_LB 0x0026
+#define EMERALD_RB 0x0027
+#define EMERALD_LO 0x002E
+#define EMERALD_RO 0x002F
+
+#define STONE_LB 0x0034
+#define STONE_RB 0x0035
+#define STONE_LO 0x003C
+#define STONE_RO 0x003D
+
+#define DIAMOND_LB 0x0036
+#define DIAMOND_RB 0x0037
+#define DIAMOND_LO 0x003E
+#define DIAMOND_RO 0x003F
+
 #define BROWNBGTILE 0x0032
 #define AIR 0x0000
 

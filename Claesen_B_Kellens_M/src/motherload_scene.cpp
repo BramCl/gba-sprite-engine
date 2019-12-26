@@ -67,27 +67,18 @@ void MotherloadScene::load() {
    // postload();
 }
  */
-bool MotherloadScene::blockIsClear(int upperLeftX, int upperLeftY) {
-    if((2 + scrollY / 8)%2 != 0){
-        scrollY++;
-    }
-    if (fullMap[(upperLeftX + scrollX / 8) + (upperLeftY + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE &&
-        fullMap[(upperLeftX + 1 + scrollX / 8) + (upperLeftY + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE &&
-        fullMap[(upperLeftX + scrollX / 8) + (upperLeftY + 1 + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE &&
-        fullMap[(upperLeftX + 1 + scrollX / 8) + (upperLeftY + 1 + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE) {
+bool MotherloadScene::blockIsClear(int X, int Y) {
+    if (fullMap[(X + scrollX / 8) + (Y + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE) {
         return true;
     } else
-        return fullMap[(upperLeftX + scrollX / 8) + (upperLeftY + scrollY / 8) * MAP_WIDTH] == AIR &&
-               fullMap[(upperLeftX + 1 + scrollX / 8) + (upperLeftY + scrollY / 8) * MAP_WIDTH] == AIR &&
-               fullMap[(upperLeftX + scrollX / 8) + (upperLeftY + 1 + scrollY / 8) * MAP_WIDTH] == AIR &&
-               fullMap[(upperLeftX + 1 + scrollX / 8) + (upperLeftY + 1 + scrollY / 8) * MAP_WIDTH] == AIR;
-
+        return fullMap[(X + scrollX / 8) + (Y + scrollY / 8) * MAP_WIDTH] == AIR;
 }
+
 void MotherloadScene::seedRandomMap() {
 
     for (int x = 0; x < MAP_WIDTH; x += 2) {
         for (int y = 6; y < FULL_MAP_HEIGHT; y += 2) {
-            int i = qran_range(0, 6);
+            int i = rand() % 100;
             if(i == 0){
                 fullMap[y * MAP_WIDTH + x] = BROWNBGTILE;
                 fullMap[y * MAP_WIDTH + (x+1)] = BROWNBGTILE;
@@ -123,39 +114,45 @@ void MotherloadScene::tick(u16 keys) {
         updateMap();
         update = !update;
     }
-    TextStream::instance().setText(std::to_string(-scrollY), 0, 0);
+    TextStream::instance().setText(std::to_string(scrollX), 0, 0);
+    TextStream::instance().setText(std::to_string(-scrollY), 1, 0);
 
     bg.get()->scroll(scrollX, 0);
     bg.get()->updateMap(map);
 
     if (keys & KEY_LEFT) {
-        while((13 + scrollX / 8)%2 != 0){
-            scrollX--;
-        }
-        if (blockIsClear(13, 4)) {
+        if (blockIsClear(14, 4) && blockIsClear(14,5)) {
             scrollX -= 2;
             player->animateToFrame(0);
         }
+        else if (!blockIsClear(14,4) && !blockIsClear(13,4) && !blockIsClear(14,5) && !blockIsClear(13,5) && !blockIsClear(15,6) && !blockIsClear(16,6)) {
+            fullMap[(14 + scrollX / 8) + ((4 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
+            fullMap[(13 + scrollX / 8) + ((4 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
+            fullMap[(14 + scrollX / 8) + ((5 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
+            fullMap[(13 + scrollX / 8) + ((5 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
+            updateMap();
+        }
     }
     if (keys & KEY_RIGHT) {
-        while((17 + scrollX / 8)%2 != 0){
-            scrollX++;
-        }
-        if (blockIsClear(17, 4)) {
+        if (blockIsClear(17, 4) && blockIsClear(17, 5)) {
             scrollX += 2;
             player->animateToFrame(2);
         }
+        else if (!blockIsClear(17,4) && !blockIsClear(18,4) && !blockIsClear(17,5) && !blockIsClear(18,5) && !blockIsClear(15,6) && !blockIsClear(16,6)) {
+            fullMap[(17 + scrollX / 8) + ((4 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
+            fullMap[(18 + scrollX / 8) + ((4 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
+            fullMap[(17 + scrollX / 8) + ((5 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
+            fullMap[(18 + scrollX / 8) + ((5 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
+            updateMap();
+        }
     }
     if (keys & KEY_UP) {
-        while((2 + scrollY / 8)%2 != 0){
-            scrollY--;
-        }
-        if (blockIsClear(15, 2)) {
+        if (blockIsClear(15, 3) && blockIsClear(16,3)) {
             scrollY -= 2;
             player->animateToFrame(1);
         }
     }
-    if(blockIsClear(15,6)) {
+    if(blockIsClear(15,6) && blockIsClear(16,6)) {
         if (keys & KEY_DOWN) {
             scrollY += 1;
             player->animateToFrame(3);
@@ -167,7 +164,7 @@ void MotherloadScene::tick(u16 keys) {
             scrollX--;
         }
 
-        if (!blockIsClear(15,6)) {
+        if (!blockIsClear(15,6) && !blockIsClear(16,6) && !blockIsClear(15,7) && !blockIsClear(16,7)) {
             fullMap[(15 + scrollX / 8) + ((6 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
             fullMap[(16 + scrollX / 8) + ((6 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
             fullMap[(15 + scrollX / 8) + ((7 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
