@@ -79,11 +79,53 @@ void MotherloadScene::seedRandomMap() {
     for (int x = 0; x < MAP_WIDTH; x += 2) {
         for (int y = 6; y < FULL_MAP_HEIGHT; y += 2) {
             int i = rand() % 100;
-            if(i == 0){
+            if(i <= 4){ //5% is empty space
                 fullMap[y * MAP_WIDTH + x] = BROWNBGTILE;
                 fullMap[y * MAP_WIDTH + (x+1)] = BROWNBGTILE;
                 fullMap[(y+1) * MAP_WIDTH + x] = BROWNBGTILE;
                 fullMap[(y+1) * MAP_WIDTH + (x+1)] = BROWNBGTILE;
+            }
+            else if(i > 4 && i <= 7){ //3% is stone
+                fullMap[y * MAP_WIDTH + x] = STONE_LB;
+                fullMap[y * MAP_WIDTH + (x+1)] = STONE_RB;
+                fullMap[(y+1) * MAP_WIDTH + x] = STONE_LO;
+                fullMap[(y+1) * MAP_WIDTH + (x+1)] = STONE_RO;
+            }
+            else if(i > 7 && i <= 14){ //7% is iron
+                fullMap[y * MAP_WIDTH + x] = IRON_LB;
+                fullMap[y * MAP_WIDTH + (x+1)] = IRON_RB;
+                fullMap[(y+1) * MAP_WIDTH + x] = IRON_LO;
+                fullMap[(y+1) * MAP_WIDTH + (x+1)] = IRON_RO;
+            }
+            else if(i > 14 && i <= 19){ //5% is copper
+                fullMap[y * MAP_WIDTH + x] = COPPER_LB;
+                fullMap[y * MAP_WIDTH + (x+1)] = COPPER_RB;
+                fullMap[(y+1) * MAP_WIDTH + x] = COPPER_LO;
+                fullMap[(y+1) * MAP_WIDTH + (x+1)] = COPPER_RO;
+            }
+            else if(i > 19 && i <= 21){ //2% is gold
+                fullMap[y * MAP_WIDTH + x] = GOLD_LB;
+                fullMap[y * MAP_WIDTH + (x+1)] = GOLD_RB;
+                fullMap[(y+1) * MAP_WIDTH + x] = GOLD_LO;
+                fullMap[(y+1) * MAP_WIDTH + (x+1)] = GOLD_RO;
+            }
+            else if(i > 21 && i <= 22){ //1% is emerald
+                fullMap[y * MAP_WIDTH + x] = DIAMOND_LB;
+                fullMap[y * MAP_WIDTH + (x+1)] = DIAMOND_RB;
+                fullMap[(y+1) * MAP_WIDTH + x] = DIAMOND_LO;
+                fullMap[(y+1) * MAP_WIDTH + (x+1)] = DIAMOND_RO;
+            }
+            else if(i > 22 && i <= 23){ //1% is diamond
+                fullMap[y * MAP_WIDTH + x] = EMERALD_LB;
+                fullMap[y * MAP_WIDTH + (x+1)] = EMERALD_RB;
+                fullMap[(y+1) * MAP_WIDTH + x] = EMERALD_LO;
+                fullMap[(y+1) * MAP_WIDTH + (x+1)] = EMERALD_RO;
+            }
+            else if(i > 23 && i <= 25){ //2% is lava
+                fullMap[y * MAP_WIDTH + x] = LAVA_LB;
+                fullMap[y * MAP_WIDTH + (x+1)] = LAVA_RB;
+                fullMap[(y+1) * MAP_WIDTH + x] = LAVA_LO;
+                fullMap[(y+1) * MAP_WIDTH + (x+1)] = LAVA_RO;
             }
             else {
                 fullMap[y * MAP_WIDTH + x] = DIRT_LB;
