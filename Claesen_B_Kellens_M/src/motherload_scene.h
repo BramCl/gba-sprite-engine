@@ -53,6 +53,13 @@
 #define BROWNBGTILE 0x0032
 #define AIR 0x0000
 
+#define DIRT_MINE_TIME 700
+#define IRON_MINE_TIME 1000
+#define COPPER_MINE_TIME 1200
+#define GOLD_MINE_TIME 1400
+#define EMERALD_MINE_TIME 1700
+#define DIAMOND_MINE_TIME 2000
+
 #include <libgba-sprite-engine/sprites/sprite.h>
 #include <libgba-sprite-engine/sprites/affine_sprite.h>
 #include <libgba-sprite-engine/scene.h>
@@ -67,7 +74,7 @@ private:
     u16 map[MAP_SIZE] = {};
     u16 fullMap[FULL_MAP_SIZE] = {};
 
-    int scrollX, scrollY, rotateA, lastUpdate;
+    int scrollX, scrollY, rotateA, lastUpdate, startMiningScrollX, startMiningScrollY, startMiningTimer;
     bool update;
 public:
     MotherloadScene(std::shared_ptr<GBAEngine> engine) : Scene(engine), scrollX(0), scrollY(0), rotateA(0) {}
@@ -78,6 +85,7 @@ public:
     bool blockIsClear(int x, int y);
     bool blockIsMineable(int x, int y);
     void updateMap();
+    void mineBlock(int x, int y);
     void load() override;
     void tick(u16 keys) override;
 };

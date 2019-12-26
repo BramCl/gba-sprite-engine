@@ -43,6 +43,9 @@ void MotherloadScene::load() {
     foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(diggerPal, sizeof(diggerPal)));
     backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(bg_big_Pal, sizeof(bg_big_Pal)));
     update = true;
+    startMiningScrollX = 0;
+    startMiningScrollY = 0;
+    startMiningTimer = 0;
     SpriteBuilder<AffineSprite> affineBuilder;
 
     player = affineBuilder
@@ -96,99 +99,138 @@ bool MotherloadScene::blockIsMineable(int x, int y){
         return false;
     } else return fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] != STONE_RO;
 }
-
 void MotherloadScene::seedRandomMap() {
 
     for (int x = 0; x < MAP_WIDTH; x += 2) {
         for (int y = 6; y < FULL_MAP_HEIGHT; y += 2) {
-            if(x==0){
+            if (y == 254) {
                 fullMap[y * MAP_WIDTH + x] = STONE_LB;
                 fullMap[y * MAP_WIDTH + (x + 1)] = STONE_RB;
                 fullMap[(y + 1) * MAP_WIDTH + x] = STONE_LO;
                 fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = STONE_RO;
-            }
-            else if(x==(MAP_WIDTH-2)){
-                fullMap[y * MAP_WIDTH + x] = STONE_LB;
-                fullMap[y * MAP_WIDTH + (x + 1)] = STONE_RB;
-                fullMap[(y + 1) * MAP_WIDTH + x] = STONE_LO;
-                fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = STONE_RO;
-            }
-            else {
-                int i = rand() % 100;
-                if (i <= 4) { //5% is empty space
-                    fullMap[y * MAP_WIDTH + x] = BROWNBGTILE;
-                    fullMap[y * MAP_WIDTH + (x + 1)] = BROWNBGTILE;
-                    fullMap[(y + 1) * MAP_WIDTH + x] = BROWNBGTILE;
-                    fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = BROWNBGTILE;
-                } else if (i > 4 && i <= 7) { //3% is stone
+            } else {
+                if (x == 0) {
                     fullMap[y * MAP_WIDTH + x] = STONE_LB;
                     fullMap[y * MAP_WIDTH + (x + 1)] = STONE_RB;
                     fullMap[(y + 1) * MAP_WIDTH + x] = STONE_LO;
                     fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = STONE_RO;
-                } else if (i > 7 && i <= 14) { //7% is iron
-                    fullMap[y * MAP_WIDTH + x] = IRON_LB;
-                    fullMap[y * MAP_WIDTH + (x + 1)] = IRON_RB;
-                    fullMap[(y + 1) * MAP_WIDTH + x] = IRON_LO;
-                    fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = IRON_RO;
-                } else if (i > 14 && i <= 19) { //5% is copper
-                    fullMap[y * MAP_WIDTH + x] = COPPER_LB;
-                    fullMap[y * MAP_WIDTH + (x + 1)] = COPPER_RB;
-                    fullMap[(y + 1) * MAP_WIDTH + x] = COPPER_LO;
-                    fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = COPPER_RO;
-                } else if (i > 19 && i <= 21) { //2% is gold
-                    fullMap[y * MAP_WIDTH + x] = GOLD_LB;
-                    fullMap[y * MAP_WIDTH + (x + 1)] = GOLD_RB;
-                    fullMap[(y + 1) * MAP_WIDTH + x] = GOLD_LO;
-                    fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = GOLD_RO;
-                } else if (i > 21 && i <= 22) { //1% is emerald
-                    fullMap[y * MAP_WIDTH + x] = DIAMOND_LB;
-                    fullMap[y * MAP_WIDTH + (x + 1)] = DIAMOND_RB;
-                    fullMap[(y + 1) * MAP_WIDTH + x] = DIAMOND_LO;
-                    fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = DIAMOND_RO;
-                } else if (i > 22 && i <= 23) { //1% is diamond
-                    fullMap[y * MAP_WIDTH + x] = EMERALD_LB;
-                    fullMap[y * MAP_WIDTH + (x + 1)] = EMERALD_RB;
-                    fullMap[(y + 1) * MAP_WIDTH + x] = EMERALD_LO;
-                    fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = EMERALD_RO;
-                } else if (i > 23 && i <= 25) { //2% is lava
-                    fullMap[y * MAP_WIDTH + x] = LAVA_LB;
-                    fullMap[y * MAP_WIDTH + (x + 1)] = LAVA_RB;
-                    fullMap[(y + 1) * MAP_WIDTH + x] = LAVA_LO;
-                    fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = LAVA_RO;
+                } else if (x == (MAP_WIDTH - 2)) {
+                    fullMap[y * MAP_WIDTH + x] = STONE_LB;
+                    fullMap[y * MAP_WIDTH + (x + 1)] = STONE_RB;
+                    fullMap[(y + 1) * MAP_WIDTH + x] = STONE_LO;
+                    fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = STONE_RO;
                 } else {
-                    fullMap[y * MAP_WIDTH + x] = DIRT_LB;
-                    fullMap[y * MAP_WIDTH + (x + 1)] = DIRT_RB;
-                    fullMap[(y + 1) * MAP_WIDTH + x] = DIRT_LO;
-                    fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = DIRT_RO;
+                    int i = rand() % 100;
+                    if (i <= 4) { //5% is empty space
+                        fullMap[y * MAP_WIDTH + x] = BROWNBGTILE;
+                        fullMap[y * MAP_WIDTH + (x + 1)] = BROWNBGTILE;
+                        fullMap[(y + 1) * MAP_WIDTH + x] = BROWNBGTILE;
+                        fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = BROWNBGTILE;
+                    } else if (i > 4 && i <= 7) { //3% is stone
+                        fullMap[y * MAP_WIDTH + x] = STONE_LB;
+                        fullMap[y * MAP_WIDTH + (x + 1)] = STONE_RB;
+                        fullMap[(y + 1) * MAP_WIDTH + x] = STONE_LO;
+                        fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = STONE_RO;
+                    } else if (i > 7 && i <= 14) { //7% is iron
+                        fullMap[y * MAP_WIDTH + x] = IRON_LB;
+                        fullMap[y * MAP_WIDTH + (x + 1)] = IRON_RB;
+                        fullMap[(y + 1) * MAP_WIDTH + x] = IRON_LO;
+                        fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = IRON_RO;
+                    } else if (i > 14 && i <= 19) { //5% is copper
+                        fullMap[y * MAP_WIDTH + x] = COPPER_LB;
+                        fullMap[y * MAP_WIDTH + (x + 1)] = COPPER_RB;
+                        fullMap[(y + 1) * MAP_WIDTH + x] = COPPER_LO;
+                        fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = COPPER_RO;
+                    } else if (i > 19 && i <= 21) { //2% is gold
+                        fullMap[y * MAP_WIDTH + x] = GOLD_LB;
+                        fullMap[y * MAP_WIDTH + (x + 1)] = GOLD_RB;
+                        fullMap[(y + 1) * MAP_WIDTH + x] = GOLD_LO;
+                        fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = GOLD_RO;
+                    } else if (i > 21 && i <= 22) { //1% is emerald
+                        fullMap[y * MAP_WIDTH + x] = DIAMOND_LB;
+                        fullMap[y * MAP_WIDTH + (x + 1)] = DIAMOND_RB;
+                        fullMap[(y + 1) * MAP_WIDTH + x] = DIAMOND_LO;
+                        fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = DIAMOND_RO;
+                    } else if (i > 22 && i <= 23) { //1% is diamond
+                        fullMap[y * MAP_WIDTH + x] = EMERALD_LB;
+                        fullMap[y * MAP_WIDTH + (x + 1)] = EMERALD_RB;
+                        fullMap[(y + 1) * MAP_WIDTH + x] = EMERALD_LO;
+                        fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = EMERALD_RO;
+                    } else if (i > 23 && i <= 25) { //2% is lava
+                        fullMap[y * MAP_WIDTH + x] = LAVA_LB;
+                        fullMap[y * MAP_WIDTH + (x + 1)] = LAVA_RB;
+                        fullMap[(y + 1) * MAP_WIDTH + x] = LAVA_LO;
+                        fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = LAVA_RO;
+                    } else {
+                        fullMap[y * MAP_WIDTH + x] = DIRT_LB;
+                        fullMap[y * MAP_WIDTH + (x + 1)] = DIRT_RB;
+                        fullMap[(y + 1) * MAP_WIDTH + x] = DIRT_LO;
+                        fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = DIRT_RO;
+                    }
                 }
             }
+            for (int y = 0; y < 6; y += 2)
+                if (x == 0) {
+                    fullMap[y * MAP_WIDTH + x] = STONE_LB;
+                    fullMap[y * MAP_WIDTH + (x + 1)] = STONE_RB;
+                    fullMap[(y + 1) * MAP_WIDTH + x] = STONE_LO;
+                    fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = STONE_RO;
+                } else if (x == (MAP_WIDTH - 2)) {
+                    fullMap[y * MAP_WIDTH + x] = STONE_LB;
+                    fullMap[y * MAP_WIDTH + (x + 1)] = STONE_RB;
+                    fullMap[(y + 1) * MAP_WIDTH + x] = STONE_LO;
+                    fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = STONE_RO;
+                } else {
+                    fullMap[y * MAP_WIDTH + x] = AIR;
+                    fullMap[(y + 1) * MAP_WIDTH + x] = AIR;
+                }
         }
-        for (int y = 0; y < 6; y+=2)
-            if(x==0){
-                fullMap[y * MAP_WIDTH + x] = STONE_LB;
-                fullMap[y * MAP_WIDTH + (x + 1)] = STONE_RB;
-                fullMap[(y + 1) * MAP_WIDTH + x] = STONE_LO;
-                fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = STONE_RO;
-            }
-            else if(x==(MAP_WIDTH-2)){
-                fullMap[y * MAP_WIDTH + x] = STONE_LB;
-                fullMap[y * MAP_WIDTH + (x + 1)] = STONE_RB;
-                fullMap[(y + 1) * MAP_WIDTH + x] = STONE_LO;
-                fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = STONE_RO;
-            }
-            else {
-                fullMap[y * MAP_WIDTH + x] = AIR;
-                fullMap[(y+1) * MAP_WIDTH + x] = AIR;
-            }
     }
 
 
 }
-
-
 void MotherloadScene::updateMap(){
     for(int i = 0; i <MAP_SIZE; i++){
         map[i]= fullMap[i+(scrollY/8)*MAP_WIDTH];
+    }
+}
+void MotherloadScene::mineBlock(int x, int y) {
+    if(scrollX != startMiningScrollX || scrollY != startMiningScrollY) {
+        startMiningScrollX = scrollX;
+        startMiningScrollY = scrollY;
+        startMiningTimer = engine->getTimer()->getTotalMsecs();
+    }
+    else{
+        if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == DIRT_LB &&
+                (startMiningTimer + DIRT_MINE_TIME) >= (engine->getTimer()->getTotalMsecs())){
+            return;
+        }
+        else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == IRON_LB &&
+                (startMiningTimer + IRON_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
+            return;
+        }
+        else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == COPPER_LB &&
+                (startMiningTimer + COPPER_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
+            return;
+        }
+        else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == GOLD_LB &&
+                (startMiningTimer+GOLD_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
+            return;
+        }
+        else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == EMERALD_LB &&
+                (startMiningTimer+EMERALD_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
+            return;
+        }
+        else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == DIAMOND_LB &&
+                (startMiningTimer +DIAMOND_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
+            return;
+        }
+        fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
+        fullMap[(x+1 + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
+        fullMap[(x + scrollX / 8) + ((y+1 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
+        fullMap[(x+1 + scrollX / 8) + ((y+1 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
+
+        updateMap();
     }
 }
 void MotherloadScene::tick(u16 keys) {
@@ -214,11 +256,7 @@ void MotherloadScene::tick(u16 keys) {
             player->animateToFrame(0);
         }
         else if (blockIsMineable(14,4) && blockIsMineable(13,4) && blockIsMineable(14,5) && blockIsMineable(13,5) && !blockIsClear(15,6) && !blockIsClear(16,6)) {
-            fullMap[(14 + scrollX / 8) + ((4 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
-            fullMap[(13 + scrollX / 8) + ((4 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
-            fullMap[(14 + scrollX / 8) + ((5 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
-            fullMap[(13 + scrollX / 8) + ((5 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
-            updateMap();
+            mineBlock(13,4);
         }
     }
     if (keys & KEY_RIGHT) {
@@ -227,11 +265,7 @@ void MotherloadScene::tick(u16 keys) {
             player->animateToFrame(2);
         }
         else if (blockIsMineable(17,4) && blockIsMineable(18,4) && blockIsMineable(17,5) && blockIsMineable(18,5) && !blockIsClear(15,6) && !blockIsClear(16,6)) {
-            fullMap[(17 + scrollX / 8) + ((4 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
-            fullMap[(18 + scrollX / 8) + ((4 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
-            fullMap[(17 + scrollX / 8) + ((5 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
-            fullMap[(18 + scrollX / 8) + ((5 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
-            updateMap();
+            mineBlock(17,4);
         }
     }
     if (keys & KEY_UP) {
@@ -253,11 +287,7 @@ void MotherloadScene::tick(u16 keys) {
         }
 
         if (blockIsMineable(15,6) && blockIsMineable(16,6) && blockIsMineable(15,7) && blockIsMineable(16,7) && !blockIsClear(15,6) && !blockIsClear(16,6)) {
-            fullMap[(15 + scrollX / 8) + ((6 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
-            fullMap[(16 + scrollX / 8) + ((6 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
-            fullMap[(15 + scrollX / 8) + ((7 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
-            fullMap[(16 + scrollX / 8) + ((7 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
-            updateMap();
+            mineBlock(15,6);
         }
     }
 
