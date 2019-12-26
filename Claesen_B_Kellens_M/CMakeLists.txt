@@ -5,7 +5,7 @@ add_executable(${PROJECT_NAME}.elf
         src/sample_start_scene.cpp
         src/sample_start_scene.h
         src/motherload_scene.cpp
-        src/motherload_scene.h src/digger.h src/backgroundblocks.h)
+        src/motherload_scene.h src/digger.h src/backgroundblocks.h src/dirtAnimation.h)
 
 target_link_libraries(${PROJECT_NAME}.elf gba-sprite-engine)
 

@@ -17,6 +17,7 @@ class Scene {
 protected:
     std::unique_ptr<ForegroundPaletteManager> foregroundPalette;
     std::unique_ptr<BackgroundPaletteManager> backgroundPalette;
+ //   std::unique_ptr<ForegroundPaletteManager> splashPalette;
     std::shared_ptr<GBAEngine> engine;
 
     void addSprite(Sprite* sprite);

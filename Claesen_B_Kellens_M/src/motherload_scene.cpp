@@ -20,6 +20,7 @@
 #include "kul.h"
 #include "backgroundblocks.h"
 #include "digger.h"
+#include "dirtAnimation.h"
 
 int __qran_seed= 42;     // Seed / rnd holder
 
@@ -42,6 +43,7 @@ void MotherloadScene::load() {
     engine->getTimer()->start();
     foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(diggerPal, sizeof(diggerPal)));
     backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(bg_big_Pal, sizeof(bg_big_Pal)));
+   // splashPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(dirtSplash_Left_Pal, sizeof(dirtSplash_Left_Pal)));
     update = true;
     startMiningScrollX = 0;
     startMiningScrollY = 0;
@@ -53,25 +55,19 @@ void MotherloadScene::load() {
             .withSize(SIZE_32_32)
             .withLocation(112, 18)
             .buildPtr();
+
+    splash = affineBuilder
+            .withData(dirtSplash_Left, sizeof(dirtSplash_Left))
+            .withSize(SIZE_32_32)
+            .withLocation(112, 18)
+            .buildPtr();
     seedRandomMap();
     bg = std::unique_ptr<Background>(new Background(1, dirt_bigTiles, sizeof(dirt_bigTiles), map, sizeof(map)));
 
     bg.get()->useMapScreenBlock(16);
 }
 
-/*
-// HIER GEKOPIEERD VAN CONWAY
-void MotherloadScene::load() {
-    backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(bg_pal_mother, sizeof(bg_pal_mother)));
 
-    seedRandomMap(((32 * 64) / 100) * 0.25);
-
-    bg = std::unique_ptr<Background>(new Background(1, motherload_data, sizeof(motherload_data), map, sizeof(map)));
-    bg.get()->useMapScreenBlock(16);
-
-   // postload();
-}
- */
 bool MotherloadScene::blockIsClear(int x, int y) {
     if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE) {
         return true;
@@ -199,10 +195,25 @@ void MotherloadScene::mineBlock(int x, int y) {
         startMiningScrollX = scrollX;
         startMiningScrollY = scrollY;
         startMiningTimer = engine->getTimer()->getTotalMsecs();
+
     }
     else{
+    auto frame = player->getCurrentFrame();
+        if(frame == 0 || frame == 4 ||frame == 5) {
+            player->makeAnimated(4, 2, 5);
+
+        }
+        else if(frame == 3 || frame == 8 ||frame == 9) {
+            player->makeAnimated(8, 2, 5);
+        }
+        else if(frame == 2 || frame == 6 ||frame == 7) {
+            player->makeAnimated(6, 2, 5);
+        }
+
+
         if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == DIRT_LB &&
                 (startMiningTimer + DIRT_MINE_TIME) >= (engine->getTimer()->getTotalMsecs())){
+
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == IRON_LB &&
@@ -234,7 +245,7 @@ void MotherloadScene::mineBlock(int x, int y) {
     }
 }
 void MotherloadScene::tick(u16 keys) {
-
+    player -> stopAnimating();
     if((scrollY % 8) == 0 && lastUpdate != scrollY){
         update = true;
         lastUpdate = scrollY;
@@ -272,6 +283,11 @@ void MotherloadScene::tick(u16 keys) {
         if (blockIsClear(15, 3) && blockIsClear(16,3)) {
             scrollY -= 2;
             player->animateToFrame(1);
+            auto frame = player->getCurrentFrame();
+            if(frame == 1 || frame == 10 ||frame == 11) {
+                player->makeAnimated(10, 2, 5);
+
+            }
         }
     }
     if(blockIsClear(15,6) && blockIsClear(16,6)) {

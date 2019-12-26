@@ -70,6 +70,7 @@ class MotherloadScene : public Scene {
 private:
 
     std::unique_ptr<Sprite> player;
+    std::unique_ptr<Sprite> splash;
     std::unique_ptr<Background> bg;
     u16 map[MAP_SIZE] = {};
     u16 fullMap[FULL_MAP_SIZE] = {};
