@@ -75,7 +75,8 @@ public:
     std::vector<Sprite *> sprites() override;
     std::vector<Background *> backgrounds() override;
     void seedRandomMap();
-    bool blockIsClear(int upperLeftX, int upperLeftY);
+    bool blockIsClear(int x, int y);
+    bool blockIsMineable(int x, int y);
     void updateMap();
     void load() override;
     void tick(u16 keys) override;
