@@ -62,6 +62,7 @@ void MotherloadScene::load() {
             .withLocation(112, 18)
             .buildPtr();
     seedRandomMap();
+    fuel = 50;
     bg = std::unique_ptr<Background>(new Background(1, dirt_bigTiles, sizeof(dirt_bigTiles), map, sizeof(map)));
 
     bg.get()->useMapScreenBlock(16);
@@ -195,7 +196,6 @@ void MotherloadScene::mineBlock(int x, int y) {
         startMiningScrollX = scrollX;
         startMiningScrollY = scrollY;
         startMiningTimer = engine->getTimer()->getTotalMsecs();
-
     }
     else{
     auto frame = player->getCurrentFrame();
@@ -213,34 +213,44 @@ void MotherloadScene::mineBlock(int x, int y) {
 
         if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == DIRT_LB &&
                 (startMiningTimer + DIRT_MINE_TIME) >= (engine->getTimer()->getTotalMsecs())){
-
+            fuel = fuel - 0.001;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == IRON_LB &&
                 (startMiningTimer + IRON_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
+            addMoney(0.01);
+            fuel = fuel - 0.005;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == COPPER_LB &&
                 (startMiningTimer + COPPER_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
+            addMoney(0.05);
+            fuel = fuel - 0.008;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == GOLD_LB &&
                 (startMiningTimer+GOLD_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
+            addMoney(0.1);
+            fuel = fuel - 0.01;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == EMERALD_LB &&
                 (startMiningTimer+EMERALD_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
+            addMoney(0.3);
+            fuel = fuel - 0.02;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == DIAMOND_LB &&
                 (startMiningTimer +DIAMOND_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
+            addMoney(0.5);
+            fuel = fuel - 0.05;
             return;
         }
         fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
         fullMap[(x+1 + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
         fullMap[(x + scrollX / 8) + ((y+1 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
         fullMap[(x+1 + scrollX / 8) + ((y+1 + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
-
+        addScore(1);
         updateMap();
     }
 }
@@ -254,13 +264,26 @@ void MotherloadScene::tick(u16 keys) {
         updateMap();
         update = !update;
     }
+    fuel = fuel -0.03;
+    if(fuel < 0){
+        TextStream::instance().setText("DEAD", 15, 15);
+
+    }
     TextStream::instance().setText(std::to_string(engine->getTimer()->getTotalMsecs()), 0, 1);
     TextStream::instance().setText(std::to_string(-scrollY), 1, 1);
+    TextStream::instance().setText("Score: " + std::to_string(score), 0, 15);
+    TextStream::instance().setText("Money: " + std::to_string((int) money), 1, 15);
+    TextStream::instance().setText("Fuel: " + std::to_string((int) fuel), 10, 0);
 
     bg.get()->scroll(8, 0);
     player->moveTo(104+scrollX,18);
     bg.get()->updateMap(map);
 
+    if(keys & KEY_A){ // toest X op toetsenbor
+        if( 0< player ->getX() <20 && scrollY ==0 ){
+            refuel();
+        }
+    }
     if (keys & KEY_LEFT) {
         if (blockIsClear(14, 4) && blockIsClear(14,5)) {
             scrollX -= 2;
@@ -306,8 +329,20 @@ void MotherloadScene::tick(u16 keys) {
             mineBlock(15,6);
         }
     }
-
     if(scrollY < 0){
         scrollY = 0;
+    }
+}
+
+void MotherloadScene::addScore(int points) {
+    score = score + points;
+}
+void MotherloadScene::addMoney(float money){
+    this -> money  = this->money + money;
+}
+void MotherloadScene::refuel(){
+    if(fuel < 100){
+        fuel = fuel  + 0.1;
+        money = money -0.005;
     }
 }
