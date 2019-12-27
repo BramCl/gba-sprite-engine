@@ -5,7 +5,7 @@
 //
 // Created by Wouter Groeneveld on 02/08/18.
 //
-/*
+
 #include <libgba-sprite-engine/sprites/sprite_builder.h>
 #include <libgba-sprite-engine/background/text_stream.h>
 #include <libgba-sprite-engine/gba/tonc_memdef.h>
@@ -13,7 +13,7 @@
 #include <libgba-sprite-engine/effects/fade_out_scene.h>
 #include "sample_start_scene.h"
 #include "motherload_scene.h"
-
+#include "digger.h"
 
 
 std::vector<Background *> SampleStartScene::backgrounds() {
@@ -21,33 +21,25 @@ std::vector<Background *> SampleStartScene::backgrounds() {
 }
 
 std::vector<Sprite *> SampleStartScene::sprites() {
-    return {  animation.get(), finalFantasyGuy.get() };
+    return {  animation.get() };
 }
 
 void SampleStartScene::load() {
-    foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(sharedPal, sizeof(sharedPal)));
+    foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(diggerPal, sizeof(diggerPal)));
     backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager());
 
     SpriteBuilder<Sprite> builder;
 
     animation = builder
-            .withData(lamaTiles, sizeof(lamaTiles))
+            .withData(digger, sizeof(digger))
             .withSize(SIZE_32_32)
-            .withAnimated(6, 3)
-            .withLocation(50, 50)
-            .buildPtr();
-
-    finalFantasyGuy = builder
-            .withData(lopen_jongenTiles, sizeof(lopen_jongenTiles))
-            .withSize(SIZE_16_16)
-            .withAnimated(2, 10)
-            .withLocation(10, 10)
+            .withAnimated(0,4, 10)
+    .withLocation(50, 50)
             .buildPtr();
 
     TextStream::instance().setText("PIETERT", 3, 8);
 
     engine->getTimer()->start();
-    engine->enqueueMusic(zelda_music_16K_mono, zelda_music_16K_mono_bytes);
 }
 
 void SampleStartScene::tick(u16 keys) {
@@ -58,9 +50,8 @@ void SampleStartScene::tick(u16 keys) {
         pressingAorB = false;
     }
 
-    if(keys & KEY_START) {
+    if(keys ) {
         if(!engine->isTransitioning()) {
-            engine->enqueueSound(zelda_secret_16K_mono, zelda_secret_16K_mono_bytes);
 
             TextStream::instance() << "entered: starting next scene";
 
@@ -79,4 +70,3 @@ void SampleStartScene::tick(u16 keys) {
         pressingAorB = true;
     }
 }
-*/

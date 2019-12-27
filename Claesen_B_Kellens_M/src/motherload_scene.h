@@ -70,14 +70,14 @@ class MotherloadScene : public Scene {
 private:
 
     std::unique_ptr<Sprite> player;
-    std::unique_ptr<Sprite> splash;
+    std::unique_ptr<Sprite> batterySprite;
     std::unique_ptr<Background> bg;
     u16 map[MAP_SIZE] = {};
     u16 fullMap[FULL_MAP_SIZE] = {};
 
     int scrollX, scrollY, rotateA, lastUpdate, startMiningScrollX, startMiningScrollY, startMiningTimer, score;
-    float money, fuel;
-    bool update;
+    float money, fuel, fuelDrainSpeed;
+    bool update, dead;
 public:
     MotherloadScene(std::shared_ptr<GBAEngine> engine) : Scene(engine), scrollX(0), scrollY(0), rotateA(0) {}
 
@@ -93,6 +93,8 @@ public:
     void addScore(int points);
     void addMoney(float money);
     void refuel();
+    void batteryUpdate();
+    void upgradeByScore();
 };
 
 #endif //GBA_SPRITE_ENGINE_PROJECT_MOTHERLOAD_SCENE_H

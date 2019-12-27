@@ -15,19 +15,21 @@
 #include "motherload_scene.h"
 
 #include <libgba-sprite-engine/gba/tonc_core.h>
+#include <libgba-sprite-engine/effects/fade_out_scene.h>
 
 #include "character_onbewerkt_transparant_16.h"
 #include "kul.h"
 #include "backgroundblocks.h"
 #include "digger.h"
-#include "dirtAnimation.h"
+#include "gameOverScene.h"
 
 int __qran_seed= 42;     // Seed / rnd holder
 
 
 std::vector<Sprite *> MotherloadScene::sprites() {
     return {
-            player.get()
+            player.get(),
+            batterySprite.get()
     };
 }
 
@@ -56,13 +58,15 @@ void MotherloadScene::load() {
             .withLocation(112, 18)
             .buildPtr();
 
-    splash = affineBuilder
-            .withData(dirtSplash_Left, sizeof(dirtSplash_Left))
-            .withSize(SIZE_32_32)
-            .withLocation(112, 18)
+    batterySprite = affineBuilder
+            .withData(battery, sizeof(battery))
+            .withSize(SIZE_16_8)
+            .withLocation(10, 150)
             .buildPtr();
     seedRandomMap();
+    dead = false;
     fuel = 50;
+    fuelDrainSpeed = 10;
     bg = std::unique_ptr<Background>(new Background(1, dirt_bigTiles, sizeof(dirt_bigTiles), map, sizeof(map)));
 
     bg.get()->useMapScreenBlock(16);
@@ -76,6 +80,7 @@ bool MotherloadScene::blockIsClear(int x, int y) {
         return fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == AIR;
 }
 bool MotherloadScene::blockIsMineable(int x, int y){
+    /*
     if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == LAVA_LB) {
         return false;
     } else if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == LAVA_LO) {
@@ -84,7 +89,7 @@ bool MotherloadScene::blockIsMineable(int x, int y){
         return false;
     } else if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == LAVA_RO) {
         return false;
-    } else if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == AIR) {
+    } else */if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == AIR) {
         return false;
     } else if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE) {
         return false;
@@ -213,37 +218,41 @@ void MotherloadScene::mineBlock(int x, int y) {
 
         if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == DIRT_LB &&
                 (startMiningTimer + DIRT_MINE_TIME) >= (engine->getTimer()->getTotalMsecs())){
-            fuel = fuel - 0.001;
+            fuel = fuel - 0.0001*fuelDrainSpeed;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == IRON_LB &&
                 (startMiningTimer + IRON_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
             addMoney(0.01);
-            fuel = fuel - 0.005;
+            fuel = fuel - 0.0005*fuelDrainSpeed;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == COPPER_LB &&
                 (startMiningTimer + COPPER_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
             addMoney(0.05);
-            fuel = fuel - 0.008;
+            fuel = fuel - 0.0008*fuelDrainSpeed;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == GOLD_LB &&
                 (startMiningTimer+GOLD_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
             addMoney(0.1);
-            fuel = fuel - 0.01;
+            fuel = fuel - 0.001*fuelDrainSpeed;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == EMERALD_LB &&
                 (startMiningTimer+EMERALD_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
             addMoney(0.3);
-            fuel = fuel - 0.02;
+            fuel = fuel - 0.002*fuelDrainSpeed;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == DIAMOND_LB &&
                 (startMiningTimer +DIAMOND_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
             addMoney(0.5);
-            fuel = fuel - 0.05;
+            fuel = fuel - 0.005*fuelDrainSpeed;
+            return;
+        }
+        else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == LAVA_LB){
+                dead = true;
             return;
         }
         fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
@@ -264,10 +273,14 @@ void MotherloadScene::tick(u16 keys) {
         updateMap();
         update = !update;
     }
-    fuel = fuel -0.03;
+    fuel = fuel -0.003*fuelDrainSpeed;
     if(fuel < 0){
         TextStream::instance().setText("DEAD", 15, 15);
+        dead = true;
 
+    }
+    if (dead){
+       engine->transitionIntoScene(new GameOverScene(engine), new FadeOutScene(2));
     }
     TextStream::instance().setText(std::to_string(engine->getTimer()->getTotalMsecs()), 0, 1);
     TextStream::instance().setText(std::to_string(-scrollY), 1, 1);
@@ -275,6 +288,8 @@ void MotherloadScene::tick(u16 keys) {
     TextStream::instance().setText("Money: " + std::to_string((int) money), 1, 15);
     TextStream::instance().setText("Fuel: " + std::to_string((int) fuel), 10, 0);
 
+    batteryUpdate();
+    upgradeByScore();
     bg.get()->scroll(8, 0);
     player->moveTo(104+scrollX,18);
     bg.get()->updateMap(map);
@@ -306,6 +321,7 @@ void MotherloadScene::tick(u16 keys) {
         if (blockIsClear(15, 3) && blockIsClear(16,3)) {
             scrollY -= 2;
             player->animateToFrame(1);
+            fuel = fuel - 0.05;
             auto frame = player->getCurrentFrame();
             if(frame == 1 || frame == 10 ||frame == 11) {
                 player->makeAnimated(10, 2, 5);
@@ -341,8 +357,40 @@ void MotherloadScene::addMoney(float money){
     this -> money  = this->money + money;
 }
 void MotherloadScene::refuel(){
-    if(fuel < 100){
-        fuel = fuel  + 0.1;
-        money = money -0.005;
+    if(fuel < 100 && money > 0){
+        fuel = fuel  + 0.5;
+        money = money -0.025;
+    }
+}
+void MotherloadScene::batteryUpdate(){
+    if(fuel >95) batterySprite-> animateToFrame(0);
+    else if(90< fuel && fuel < 95) batterySprite -> animateToFrame(1);
+    else if(80< fuel && fuel < 90) batterySprite -> animateToFrame(2);
+    else if(70< fuel && fuel < 80) batterySprite -> animateToFrame(3);
+    else if(60< fuel && fuel < 70) batterySprite -> animateToFrame(4);
+    else if(50< fuel && fuel < 60) batterySprite -> animateToFrame(5);
+    else if(40< fuel && fuel < 50) batterySprite -> animateToFrame(6);
+    else if(30< fuel && fuel < 40) batterySprite -> animateToFrame(7);
+    else if(20< fuel && fuel < 30) batterySprite -> animateToFrame(8);
+    else if(10< fuel && fuel < 20) batterySprite -> animateToFrame(9);
+    else if(5< fuel && fuel < 10) batterySprite -> animateToFrame(10);
+    else if(0< fuel && fuel < 5) batterySprite -> animateToFrame(11);
+}
+
+void MotherloadScene::upgradeByScore(){
+    if(score == 10){
+        fuelDrainSpeed = 8;
+    }
+    else if(score == 50){
+        fuelDrainSpeed = 6;
+    }
+    else if(score == 100){
+        fuelDrainSpeed = 4;
+    }
+    else if(score == 200){
+        fuelDrainSpeed = 2;
+    }
+    else if(score == 500){
+        fuelDrainSpeed = 1;
     }
 }

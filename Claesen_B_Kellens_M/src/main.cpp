@@ -19,8 +19,8 @@
  */
 int main() {
     std::shared_ptr<GBAEngine> engine(new GBAEngine());
-
-    MotherloadScene* startScene = new MotherloadScene(engine);
+    SampleStartScene* startScene = new SampleStartScene(engine);
+  //  MotherloadScene* startScene = new MotherloadScene(engine);
     engine->setScene(startScene);
 
     while (true) {
