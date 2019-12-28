@@ -1,11 +1,6 @@
 //
 // Created by maike on 8/12/2019.
 //
-
-//
-// Created by Wouter Groeneveld on 28/07/18.
-//
-
 #include <libgba-sprite-engine/sprites/affine_sprite.h>
 #include <libgba-sprite-engine/sprites/sprite_builder.h>
 #include <libgba-sprite-engine/gba/tonc_memmap.h>
@@ -42,7 +37,6 @@ std::vector<Background *> MotherloadScene::backgrounds() {
 
 // HIER HET ROOD DE KARAKTERS NOG
 void MotherloadScene::load() {
-    engine->getTimer()->start();
     foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(diggerPal, sizeof(diggerPal)));
     backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(bg_big_Pal, sizeof(bg_big_Pal)));
    // splashPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(dirtSplash_Left_Pal, sizeof(dirtSplash_Left_Pal)));
@@ -50,6 +44,10 @@ void MotherloadScene::load() {
     startMiningScrollX = 0;
     startMiningScrollY = 0;
     startMiningTimer = 0;
+    dead = false;
+    fuel = 50;
+    fuelDrainSpeed = 10;
+    score = 0;
     SpriteBuilder<AffineSprite> affineBuilder;
 
     player = affineBuilder
@@ -64,9 +62,6 @@ void MotherloadScene::load() {
             .withLocation(10, 150)
             .buildPtr();
     seedRandomMap();
-    dead = false;
-    fuel = 50;
-    fuelDrainSpeed = 10;
     bg = std::unique_ptr<Background>(new Background(1, dirt_bigTiles, sizeof(dirt_bigTiles), map, sizeof(map)));
 
     bg.get()->useMapScreenBlock(16);
@@ -122,7 +117,7 @@ void MotherloadScene::seedRandomMap() {
                     fullMap[(y + 1) * MAP_WIDTH + x] = STONE_LO;
                     fullMap[(y + 1) * MAP_WIDTH + (x + 1)] = STONE_RO;
                 } else {
-                    int i = rand() % 100;
+                    int i = rand() % (90+((engine->getTimer()->getTotalMsecs())%20));
                     if (i <= 4) { //5% is empty space
                         fullMap[y * MAP_WIDTH + x] = BROWNBGTILE;
                         fullMap[y * MAP_WIDTH + (x + 1)] = BROWNBGTILE;
@@ -280,7 +275,16 @@ void MotherloadScene::tick(u16 keys) {
 
     }
     if (dead){
-       engine->transitionIntoScene(new GameOverScene(engine), new FadeOutScene(2));
+        if(score > 254){
+            *(sram_mem+1) = score / 255;
+        }
+        else{
+            *(sram_mem+1) = 0;
+        }
+        *sram_mem = score;
+        if(!engine->isTransitioning()) {
+            engine->transitionIntoScene(new GameOverScene(engine), new FadeOutScene(2));
+        }
     }
     TextStream::instance().setText(std::to_string(engine->getTimer()->getTotalMsecs()), 0, 1);
     TextStream::instance().setText(std::to_string(-scrollY), 1, 1);
@@ -294,7 +298,7 @@ void MotherloadScene::tick(u16 keys) {
     player->moveTo(104+scrollX,18);
     bg.get()->updateMap(map);
 
-    if(keys & KEY_A){ // toest X op toetsenbor
+    if(keys & KEY_A){ // toets X op toetsenbor
         if( 0< player ->getX() <20 && scrollY ==0 ){
             refuel();
         }

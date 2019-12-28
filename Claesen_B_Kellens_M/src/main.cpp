@@ -10,6 +10,7 @@
 #include <libgba-sprite-engine/allocator.h>
 
 #include "sample_start_scene.h"
+#include "gameOverScene.h"
 #include "motherload_scene.h"
 
 /**

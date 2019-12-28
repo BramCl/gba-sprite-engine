@@ -2,10 +2,6 @@
 // Created by maike on 8/12/2019.
 //
 
-//
-// Created by Wouter Groeneveld on 02/08/18.
-//
-
 #include <libgba-sprite-engine/sprites/sprite_builder.h>
 #include <libgba-sprite-engine/background/text_stream.h>
 #include <libgba-sprite-engine/gba/tonc_memdef.h>
@@ -13,6 +9,7 @@
 #include <libgba-sprite-engine/effects/fade_out_scene.h>
 #include "sample_start_scene.h"
 #include "motherload_scene.h"
+#include "gameOverScene.h"
 #include "digger.h"
 
 
@@ -25,48 +22,25 @@ std::vector<Sprite *> SampleStartScene::sprites() {
 }
 
 void SampleStartScene::load() {
-    foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(diggerPal, sizeof(diggerPal)));
     backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager());
 
     SpriteBuilder<Sprite> builder;
 
     animation = builder
-            .withData(digger, sizeof(digger))
-            .withSize(SIZE_32_32)
-            .withAnimated(0,4, 10)
-    .withLocation(50, 50)
+            .withData(0, 0)
             .buildPtr();
 
-    TextStream::instance().setText("PIETERT", 3, 8);
+
+    TextStream::instance().setText("Press any key to start", 6, 4);
 
     engine->getTimer()->start();
 }
 
 void SampleStartScene::tick(u16 keys) {
-    TextStream::instance().setText(engine->getTimer()->to_string(), 18, 1);
-
-    if(pressingAorB && !((keys & KEY_A) || (keys & KEY_B))) {
-        engine->getTimer()->toggle();
-        pressingAorB = false;
-    }
-
     if(keys ) {
         if(!engine->isTransitioning()) {
-
-            TextStream::instance() << "entered: starting next scene";
-
             engine->transitionIntoScene(new MotherloadScene(engine), new FadeOutScene(2));
         }
-    } else if(keys & KEY_UP) {
-        animation->flipHorizontally(true);
-        TextStream::instance() << "entered: starting next scene";
-    } else if(keys & KEY_RIGHT) {
-        animation->flipHorizontally(false);
-    } else if(keys & KEY_LEFT) {
-        animation->flipVertically(true);
-    } else if(keys & KEY_DOWN) {
-        animation->flipVertically(false);
-    } else if((keys & KEY_A) || (keys & KEY_B)) {
-        pressingAorB = true;
     }
+
 }

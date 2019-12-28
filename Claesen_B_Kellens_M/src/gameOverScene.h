@@ -11,7 +11,7 @@
 class GameOverScene : public Scene {
 private:
     std::unique_ptr<Sprite> animation;
-    bool pressingAorB = false;
+    int score;
 
 public:
     std::vector<Sprite *> sprites() override;
@@ -21,7 +21,8 @@ public:
 
     void load() override;
     void tick(u16 keys) override;
-
+    void calculateHighScores();
+    void printHighScores();
 };
 
 

@@ -66,6 +66,7 @@
 #include <libgba-sprite-engine/background/background.h>
 #include <libgba-sprite-engine/background/text_stream.h>
 
+
 class MotherloadScene : public Scene {
 private:
 
