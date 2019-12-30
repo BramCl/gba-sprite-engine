@@ -60,6 +60,12 @@
 #define EMERALD_MINE_TIME 1700
 #define DIAMOND_MINE_TIME 2000
 
+#define IRON_MONEY 1
+#define COPPER_MONEY 2
+#define GOLD_MONEY 4
+#define EMERALD_MONEY 7
+#define DIAMOND_MONEY 12
+
 #include <libgba-sprite-engine/sprites/sprite.h>
 #include <libgba-sprite-engine/sprites/affine_sprite.h>
 #include <libgba-sprite-engine/scene.h>
@@ -88,7 +94,7 @@ public:
     bool blockIsClear(int x, int y);
     bool blockIsMineable(int x, int y);
     void updateMap();
-    void mineBlock(int x, int y);
+    void mineBlock(int x, int y, u16 keys);
     void load() override;
     void tick(u16 keys) override;
     void addScore(int points);

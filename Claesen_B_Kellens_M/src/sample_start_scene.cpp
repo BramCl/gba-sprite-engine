@@ -37,7 +37,7 @@ void SampleStartScene::load() {
 }
 
 void SampleStartScene::tick(u16 keys) {
-    if(keys ) {
+    if(keys) {
         if(!engine->isTransitioning()) {
             engine->transitionIntoScene(new MotherloadScene(engine), new FadeOutScene(2));
         }

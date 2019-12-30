@@ -18,24 +18,18 @@
 #include "digger.h"
 #include "gameOverScene.h"
 
-int __qran_seed= 42;     // Seed / rnd holder
-
-
 std::vector<Sprite *> MotherloadScene::sprites() {
     return {
             player.get(),
             batterySprite.get()
     };
 }
-
 std::vector<Background *> MotherloadScene::backgrounds() {
     return {
             bg.get()
     };
 }
 
-
-// HIER HET ROOD DE KARAKTERS NOG
 void MotherloadScene::load() {
     foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(diggerPal, sizeof(diggerPal)));
     backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(bg_big_Pal, sizeof(bg_big_Pal)));
@@ -48,6 +42,7 @@ void MotherloadScene::load() {
     fuel = 50;
     fuelDrainSpeed = 10;
     score = 0;
+    money = 0;
     SpriteBuilder<AffineSprite> affineBuilder;
 
     player = affineBuilder
@@ -66,8 +61,6 @@ void MotherloadScene::load() {
 
     bg.get()->useMapScreenBlock(16);
 }
-
-
 bool MotherloadScene::blockIsClear(int x, int y) {
     if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE) {
         return true;
@@ -191,7 +184,11 @@ void MotherloadScene::updateMap(){
         map[i]= fullMap[i+(scrollY/8)*MAP_WIDTH];
     }
 }
-void MotherloadScene::mineBlock(int x, int y) {
+void MotherloadScene::mineBlock(int x, int y, u16 keys) {
+    if(!keys){
+        startMiningTimer = engine->getTimer()->getTotalMsecs();
+        return;
+    }
     if(scrollX != startMiningScrollX || scrollY != startMiningScrollY) {
         startMiningScrollX = scrollX;
         startMiningScrollY = scrollY;
@@ -201,7 +198,6 @@ void MotherloadScene::mineBlock(int x, int y) {
     auto frame = player->getCurrentFrame();
         if(frame == 0 || frame == 4 ||frame == 5) {
             player->makeAnimated(4, 2, 5);
-
         }
         else if(frame == 3 || frame == 8 ||frame == 9) {
             player->makeAnimated(8, 2, 5);
@@ -218,37 +214,47 @@ void MotherloadScene::mineBlock(int x, int y) {
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == IRON_LB &&
                 (startMiningTimer + IRON_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
-            addMoney(0.01);
             fuel = fuel - 0.0005*fuelDrainSpeed;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == COPPER_LB &&
                 (startMiningTimer + COPPER_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
-            addMoney(0.05);
             fuel = fuel - 0.0008*fuelDrainSpeed;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == GOLD_LB &&
                 (startMiningTimer+GOLD_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
-            addMoney(0.1);
             fuel = fuel - 0.001*fuelDrainSpeed;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == EMERALD_LB &&
                 (startMiningTimer+EMERALD_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
-            addMoney(0.3);
             fuel = fuel - 0.002*fuelDrainSpeed;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == DIAMOND_LB &&
                 (startMiningTimer +DIAMOND_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
-            addMoney(0.5);
             fuel = fuel - 0.005*fuelDrainSpeed;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == LAVA_LB){
             dead = true;
             return;
+        }
+        if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == IRON_LB){
+            addMoney(IRON_MONEY);
+        }
+        else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == COPPER_LB){
+            addMoney(COPPER_MONEY);
+        }
+        else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == GOLD_LB){
+            addMoney(GOLD_MONEY);
+        }
+        else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == EMERALD_LB){
+            addMoney(EMERALD_MONEY);
+        }
+        else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == DIAMOND_LB){
+            addMoney(DIAMOND_MONEY);
         }
         fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
         fullMap[(x+1 + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
@@ -295,16 +301,16 @@ void MotherloadScene::tick(u16 keys) {
     bg.get()->updateMap(map);
 
     if(0< player ->getX() <20 && scrollY ==0){ // toets X op toetsenbor
-        //TextStream::instance().setText("press x to refuel", 3, 5);
+        TextStream::instance().setText("press x to refuel", 2, 2);
         if(keys & KEY_A){
             if(money == 0){
-                TextStream::instance().setText("not enough money to refuel", 2, 5);
+                TextStream::instance().setText("not enough money to refuel", 2, 2);
             }
             refuel();
         }
     }
     else{
-        TextStream::instance().setText("", 3, 5);
+        TextStream::instance().setText("", 2, 2);
     }
     if (keys & KEY_LEFT) {
         if (blockIsClear(14, 4) && blockIsClear(14,5)) {
@@ -312,7 +318,7 @@ void MotherloadScene::tick(u16 keys) {
             player->animateToFrame(0);
         }
         else if (blockIsMineable(14,4) && blockIsMineable(13,4) && blockIsMineable(14,5) && blockIsMineable(13,5) && !blockIsClear(15,6) && !blockIsClear(16,6)) {
-            mineBlock(13,4);
+            mineBlock(13,4, keys);
         }
     }
     if (keys & KEY_RIGHT) {
@@ -321,7 +327,7 @@ void MotherloadScene::tick(u16 keys) {
             player->animateToFrame(2);
         }
         else if (blockIsMineable(17,4) && blockIsMineable(18,4) && blockIsMineable(17,5) && blockIsMineable(18,5) && !blockIsClear(15,6) && !blockIsClear(16,6)) {
-            mineBlock(17,4);
+            mineBlock(17,4, keys);
         }
     }
     if (keys & KEY_UP) {
@@ -335,6 +341,9 @@ void MotherloadScene::tick(u16 keys) {
 
             }
         }
+    }
+    if(!keys){ //wanneer er geen knop is ingedrukt, moet dit geforward worden naar de mineBlock functie, zo kan deze z'n timer resetten.
+        mineBlock(15,6,keys);
     }
     if((blockIsClear(15,6) && blockIsClear(16,6))) {
         if (keys & KEY_DOWN) {
@@ -352,14 +361,13 @@ void MotherloadScene::tick(u16 keys) {
         }
 
         if (blockIsMineable(15,6) && blockIsMineable(16,6) && blockIsMineable(15,7) && blockIsMineable(16,7) && !blockIsClear(15,6) && !blockIsClear(16,6)) {
-            mineBlock(15,6);
+            mineBlock(15,6, keys);
         }
     }
     if(scrollY < 0){
         scrollY = 0;
     }
 }
-
 void MotherloadScene::addScore(int points) {
     score = score + points;
 }
@@ -385,7 +393,6 @@ void MotherloadScene::batteryUpdate(){
     else if(10< fuel && fuel < 20) batterySprite -> animateToFrame(9);
     else if(0< fuel && fuel < 10) batterySprite -> animateToFrame(10);
 }
-
 void MotherloadScene::upgradeByScore(){
     if(score == 10){
         fuelDrainSpeed = 8;
