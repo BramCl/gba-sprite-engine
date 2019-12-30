@@ -209,32 +209,32 @@ void MotherloadScene::mineBlock(int x, int y, u16 keys) {
 
         if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == DIRT_LB &&
                 (startMiningTimer + DIRT_MINE_TIME) >= (engine->getTimer()->getTotalMsecs())){
-            fuel = fuel - 0.0001*fuelDrainSpeed;
+            fuel = fuel - FUEL_DRAIN_SPEED_DIRT*fuelDrainSpeed;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == IRON_LB &&
                 (startMiningTimer + IRON_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
-            fuel = fuel - 0.0005*fuelDrainSpeed;
+            fuel = fuel - FUEL_DRAIN_SPEED_IRON*fuelDrainSpeed;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == COPPER_LB &&
                 (startMiningTimer + COPPER_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
-            fuel = fuel - 0.0008*fuelDrainSpeed;
+            fuel = fuel - FUEL_DRAIN_SPEED_COPPER*fuelDrainSpeed;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == GOLD_LB &&
                 (startMiningTimer+GOLD_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
-            fuel = fuel - 0.001*fuelDrainSpeed;
+            fuel = fuel - FUEL_DRAIN_SPEED_GOLD*fuelDrainSpeed;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == EMERALD_LB &&
                 (startMiningTimer+EMERALD_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
-            fuel = fuel - 0.002*fuelDrainSpeed;
+            fuel = fuel - FUEL_DRAIN_SPEED_EMERALD*fuelDrainSpeed;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == DIAMOND_LB &&
                 (startMiningTimer +DIAMOND_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
-            fuel = fuel - 0.005*fuelDrainSpeed;
+            fuel = fuel - FUEL_DRAIN_SPEED_DIAMOND*fuelDrainSpeed;
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == LAVA_LB){
@@ -334,7 +334,7 @@ void MotherloadScene::tick(u16 keys) {
         if (blockIsClear(15, 3) && blockIsClear(16,3)) {
             scrollY -= 2;
             player->animateToFrame(1);
-            fuel = fuel - 0.05;
+            fuel = fuel - FUEL_DRAIN_SPEED_FLYING;
             auto frame = player->getCurrentFrame();
             if(frame == 1 || frame == 10 ||frame == 11) {
                 player->makeAnimated(10, 2, 5);

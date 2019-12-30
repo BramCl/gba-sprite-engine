@@ -66,6 +66,14 @@
 #define EMERALD_MONEY 7
 #define DIAMOND_MONEY 12
 
+#define FUEL_DRAIN_SPEED_DIRT 0.0001
+#define FUEL_DRAIN_SPEED_IRON 0.0005
+#define FUEL_DRAIN_SPEED_COPPER 0.0008
+#define FUEL_DRAIN_SPEED_GOLD 0.001
+#define FUEL_DRAIN_SPEED_EMERALD 0.002
+#define FUEL_DRAIN_SPEED_DIAMOND 0.005
+#define FUEL_DRAIN_SPEED_FLYING 0.05
+
 #include <libgba-sprite-engine/sprites/sprite.h>
 #include <libgba-sprite-engine/sprites/affine_sprite.h>
 #include <libgba-sprite-engine/scene.h>
