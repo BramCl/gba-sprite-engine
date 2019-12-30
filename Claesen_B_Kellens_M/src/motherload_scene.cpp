@@ -247,7 +247,7 @@ void MotherloadScene::mineBlock(int x, int y) {
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == LAVA_LB){
-                dead = true;
+            dead = true;
             return;
         }
         fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] = BROWNBGTILE;
@@ -336,12 +336,15 @@ void MotherloadScene::tick(u16 keys) {
             }
         }
     }
-    if(blockIsClear(15,6) && blockIsClear(16,6)) {
+    if((blockIsClear(15,6) && blockIsClear(16,6))) {
         if (keys & KEY_DOWN) {
             scrollY += 1;
             player->animateToFrame(3);
         }
         scrollY += 1;
+    }
+    if(fullMap[(15 + scrollX / 8) + ((6 + scrollY / 8) * MAP_WIDTH)] == LAVA_LB && fullMap[(16 + scrollX / 8) + ((6 + scrollY / 8) * MAP_WIDTH)] == LAVA_RB){
+        dead = true;
     }
     if(keys & KEY_DOWN){
         while((15 + scrollX / 8)%2 != 0){
