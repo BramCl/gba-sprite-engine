@@ -59,7 +59,7 @@ void MotherloadScene::load() {
     batterySprite = affineBuilder
             .withData(battery, sizeof(battery))
             .withSize(SIZE_16_8)
-            .withLocation(10, 150)
+            .withLocation(10, 0)
             .buildPtr();
     seedRandomMap();
     bg = std::unique_ptr<Background>(new Background(1, dirt_bigTiles, sizeof(dirt_bigTiles), map, sizeof(map)));
@@ -270,7 +270,6 @@ void MotherloadScene::tick(u16 keys) {
     }
     fuel = fuel -0.003*fuelDrainSpeed;
     if(fuel < 0){
-        TextStream::instance().setText("DEAD", 15, 15);
         dead = true;
 
     }
@@ -286,11 +285,8 @@ void MotherloadScene::tick(u16 keys) {
             engine->transitionIntoScene(new GameOverScene(engine), new FadeOutScene(2));
         }
     }
-    TextStream::instance().setText(std::to_string(engine->getTimer()->getTotalMsecs()), 0, 1);
-    TextStream::instance().setText(std::to_string(-scrollY), 1, 1);
     TextStream::instance().setText("Score: " + std::to_string(score), 0, 15);
     TextStream::instance().setText("Money: " + std::to_string((int) money), 1, 15);
-    TextStream::instance().setText("Fuel: " + std::to_string((int) fuel), 10, 0);
 
     batteryUpdate();
     upgradeByScore();
@@ -298,10 +294,17 @@ void MotherloadScene::tick(u16 keys) {
     player->moveTo(104+scrollX,18);
     bg.get()->updateMap(map);
 
-    if(keys & KEY_A){ // toets X op toetsenbor
-        if( 0< player ->getX() <20 && scrollY ==0 ){
+    if(0< player ->getX() <20 && scrollY ==0){ // toets X op toetsenbor
+        //TextStream::instance().setText("press x to refuel", 3, 5);
+        if(keys & KEY_A){
+            if(money == 0){
+                TextStream::instance().setText("not enough money to refuel", 2, 5);
+            }
             refuel();
         }
+    }
+    else{
+        TextStream::instance().setText("", 3, 5);
     }
     if (keys & KEY_LEFT) {
         if (blockIsClear(14, 4) && blockIsClear(14,5)) {
@@ -377,8 +380,7 @@ void MotherloadScene::batteryUpdate(){
     else if(30< fuel && fuel < 40) batterySprite -> animateToFrame(7);
     else if(20< fuel && fuel < 30) batterySprite -> animateToFrame(8);
     else if(10< fuel && fuel < 20) batterySprite -> animateToFrame(9);
-    else if(5< fuel && fuel < 10) batterySprite -> animateToFrame(10);
-    else if(0< fuel && fuel < 5) batterySprite -> animateToFrame(11);
+    else if(0< fuel && fuel < 10) batterySprite -> animateToFrame(10);
 }
 
 void MotherloadScene::upgradeByScore(){
