@@ -17,6 +17,7 @@
 #include "backgroundblocks.h"
 #include "digger.h"
 #include "gameOverScene.h"
+#include "drill.h"
 
 std::vector<Sprite *> MotherloadScene::sprites() {
     return {
@@ -210,31 +211,37 @@ void MotherloadScene::mineBlock(int x, int y, u16 keys) {
         if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == DIRT_LB &&
                 (startMiningTimer + DIRT_MINE_TIME) >= (engine->getTimer()->getTotalMsecs())){
             fuel = fuel - FUEL_DRAIN_SPEED_DIRT*fuelDrainSpeed;
+            engine.get()->enqueueSound(drill, drill_bytes, 44100);
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == IRON_LB &&
                 (startMiningTimer + IRON_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
             fuel = fuel - FUEL_DRAIN_SPEED_IRON*fuelDrainSpeed;
+            engine.get()->enqueueSound(drill, drill_bytes, 44100);
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == COPPER_LB &&
                 (startMiningTimer + COPPER_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
             fuel = fuel - FUEL_DRAIN_SPEED_COPPER*fuelDrainSpeed;
+            engine.get()->enqueueSound(drill, drill_bytes, 44100);
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == GOLD_LB &&
                 (startMiningTimer+GOLD_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
             fuel = fuel - FUEL_DRAIN_SPEED_GOLD*fuelDrainSpeed;
+            engine.get()->enqueueSound(drill, drill_bytes, 44100);
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == EMERALD_LB &&
                 (startMiningTimer+EMERALD_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
             fuel = fuel - FUEL_DRAIN_SPEED_EMERALD*fuelDrainSpeed;
+            engine.get()->enqueueSound(drill, drill_bytes, 44100);
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == DIAMOND_LB &&
                 (startMiningTimer +DIAMOND_MINE_TIME) >= engine->getTimer()->getTotalMsecs()){
             fuel = fuel - FUEL_DRAIN_SPEED_DIAMOND*fuelDrainSpeed;
+            engine.get()->enqueueSound(drill, drill_bytes, 44100);
             return;
         }
         else if(fullMap[(x + scrollX / 8) + ((y + scrollY / 8) * MAP_WIDTH)] == LAVA_LB){
