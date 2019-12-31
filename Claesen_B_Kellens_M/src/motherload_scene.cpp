@@ -41,7 +41,7 @@ void MotherloadScene::load() {
     startMiningTimer = 0;
     dead = false;
     fuel = 50;
-    fuelDrainSpeed = 10;
+    fuelDrainSpeed = 0;
     score = 0;
     money = 0;
     SpriteBuilder<AffineSprite> affineBuilder;
