@@ -90,7 +90,7 @@ private:
     u16 map[MAP_SIZE] = {};
     u16 fullMap[FULL_MAP_SIZE] = {};
 
-    int scrollX, scrollY, rotateA, lastUpdate, startMiningScrollX, startMiningScrollY, startMiningTimer, score;
+    int scrollX, scrollY, rotateA, lastUpdate, startMiningScrollX, startMiningScrollY, startMiningTimer, score, level, scoreMultiplier, levelCost;
     float money, fuel, fuelDrainSpeed;
     bool update, dead;
 public:
@@ -110,6 +110,8 @@ public:
     void refuel();
     void batteryUpdate();
     void upgradeByScore();
+    void levelUp();
+    void levelChecker();
 };
 
 #endif //GBA_SPRITE_ENGINE_PROJECT_MOTHERLOAD_SCENE_H

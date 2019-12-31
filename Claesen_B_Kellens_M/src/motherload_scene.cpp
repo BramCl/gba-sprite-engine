@@ -34,14 +34,16 @@ std::vector<Background *> MotherloadScene::backgrounds() {
 void MotherloadScene::load() {
     foregroundPalette = std::unique_ptr<ForegroundPaletteManager>(new ForegroundPaletteManager(diggerPal, sizeof(diggerPal)));
     backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(bg_big_Pal, sizeof(bg_big_Pal)));
-   // splashPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(dirtSplash_Left_Pal, sizeof(dirtSplash_Left_Pal)));
     update = true;
+    level = 1;
+    levelCost = 5;
+    scoreMultiplier = 1;
     startMiningScrollX = 0;
     startMiningScrollY = 0;
     startMiningTimer = 0;
     dead = false;
     fuel = 50;
-    fuelDrainSpeed = 0;
+    fuelDrainSpeed = 10;
     score = 0;
     money = 0;
     SpriteBuilder<AffineSprite> affineBuilder;
@@ -273,6 +275,7 @@ void MotherloadScene::mineBlock(int x, int y, u16 keys) {
 }
 void MotherloadScene::tick(u16 keys) {
     player -> stopAnimating();
+    levelChecker();
     if((scrollY % 8) == 0 && lastUpdate != scrollY){
         update = true;
         lastUpdate = scrollY;
@@ -300,7 +303,7 @@ void MotherloadScene::tick(u16 keys) {
     }
     TextStream::instance().setText("Score: " + std::to_string(score), 0, 15);
     TextStream::instance().setText("Money: " + std::to_string((int) money), 1, 15);
-
+    TextStream::instance().setText("Level: " + std::to_string((int) level), 18, 15);
     batteryUpdate();
     upgradeByScore();
     bg.get()->scroll(8, 0);
@@ -376,7 +379,7 @@ void MotherloadScene::tick(u16 keys) {
     }
 }
 void MotherloadScene::addScore(int points) {
-    score = score + points;
+    score = score + (points*scoreMultiplier);
 }
 void MotherloadScene::addMoney(float money){
     this -> money  = this->money + money;
@@ -416,4 +419,44 @@ void MotherloadScene::upgradeByScore(){
     else if(score == 500){
         fuelDrainSpeed = 1;
     }
+}
+
+void MotherloadScene::levelChecker(){
+    int checker1 = 10;
+    int levelCheck = 1;
+
+    if(score> checker1 && level == levelCheck){
+        levelUp();
+        levelCheck = levelCheck + 1;
+        if(checker1 == 30) {
+            checker1 = checker1 + 20;
+        }
+        else if(checker1 == 50){
+            checker1 = checker1 +50;
+        }
+    }
+
+}
+void MotherloadScene::levelUp() {
+    level++;
+    money = money - levelCost;
+    fuelDrainSpeed = fuelDrainSpeed *2;
+    scoreMultiplier ++;
+
+/*
+    foregroundPalette -> blue(150);
+    foregroundPalette -> green( 150);
+    foregroundPalette-> red(50);
+
+    SpriteBuilder<AffineSprite> affineBuilder;
+    std::unique_ptr<Sprite> newPlayer;
+
+    newPlayer = affineBuilder
+            .withData(digger, sizeof(digger))
+            .withSize(SIZE_32_32)
+            .withLocation(scrollX, scrollY)
+            .buildPtr();
+    player -> update();
+
+*/
 }
