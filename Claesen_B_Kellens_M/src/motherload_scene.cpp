@@ -17,7 +17,7 @@
 #include "backgroundblocks.h"
 #include "digger.h"
 #include "gameOverScene.h"
-#include "drill.h"
+#include "drill_sound.h"
 
 std::vector<Sprite *> MotherloadScene::sprites() {
     return {
