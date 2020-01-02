@@ -36,7 +36,10 @@ void MotherloadScene::load() {
     backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager(bg_big_Pal, sizeof(bg_big_Pal)));
     update = true;
     level = 1;
+    levelCheck = 1;
+    checker1 = 10;
     levelCost = 5;
+    fuelCost = 1;
     scoreMultiplier = 1;
     startMiningScrollX = 0;
     startMiningScrollY = 0;
@@ -199,13 +202,13 @@ void MotherloadScene::mineBlock(int x, int y, u16 keys) {
     }
     else{
     auto frame = player->getCurrentFrame();
-        if(frame == 0 || frame == 4 ||frame == 5) {
+        if(keys & KEY_LEFT) {
             player->makeAnimated(4, 2, 5);
         }
-        else if(frame == 3 || frame == 8 ||frame == 9) {
+        else if(keys & KEY_DOWN) {
             player->makeAnimated(8, 2, 5);
         }
-        else if(frame == 2 || frame == 6 ||frame == 7) {
+        else if(keys & KEY_RIGHT) {
             player->makeAnimated(6, 2, 5);
         }
 
@@ -301,9 +304,9 @@ void MotherloadScene::tick(u16 keys) {
             engine->transitionIntoScene(new GameOverScene(engine), new FadeOutScene(2));
         }
     }
-    TextStream::instance().setText("Score: " + std::to_string(score), 0, 15);
-    TextStream::instance().setText("Money: " + std::to_string((int) money), 1, 15);
-    TextStream::instance().setText("Level: " + std::to_string((int) level), 18, 15);
+    TextStream::instance().setText("Score: " + std::to_string(score), 0, 18);
+    TextStream::instance().setText("Money: " + std::to_string((int) money), 1, 18);
+    TextStream::instance().setText("Level: " + std::to_string((int) level), 19, 18);
     batteryUpdate();
     upgradeByScore();
     bg.get()->scroll(8, 0);
@@ -311,7 +314,7 @@ void MotherloadScene::tick(u16 keys) {
     bg.get()->updateMap(map);
 
     if(0< player ->getX() <20 && scrollY ==0){ // toets X op toetsenbor
-        TextStream::instance().setText("press x to refuel", 2, 2);
+        TextStream::instance().setText("press A/x to refuel", 2, 2);
         if(keys & KEY_A){
             if(money == 0){
                 TextStream::instance().setText("not enough money to refuel", 2, 2);
@@ -322,7 +325,7 @@ void MotherloadScene::tick(u16 keys) {
     else{
         TextStream::instance().setText("", 2, 2);
     }
-    if (keys & KEY_LEFT) {
+    if (keys & KEY_LEFT && scrollX>-110) {
         if (blockIsClear(14, 4) && blockIsClear(14,5)) {
             scrollX -= 2;
             player->animateToFrame(0);
@@ -387,7 +390,7 @@ void MotherloadScene::addMoney(float money){
 void MotherloadScene::refuel(){
     if(fuel < 100 && money > 0){
         fuel = fuel  + 0.5;
-        money = money -0.025;
+        money = money -(0.025*fuelCost);
     }
 }
 void MotherloadScene::batteryUpdate(){
@@ -422,41 +425,32 @@ void MotherloadScene::upgradeByScore(){
 }
 
 void MotherloadScene::levelChecker(){
-    int checker1 = 10;
-    int levelCheck = 1;
 
-    if(score> checker1 && level == levelCheck){
-        levelUp();
-        levelCheck = levelCheck + 1;
-        if(checker1 == 30) {
-            checker1 = checker1 + 20;
+    if(score> checker1 && level == levelCheck && (money - levelCost >5)){
+        if(checker1 < 30) {
+            levelUp();
+            checker1 = checker1 + 10;
+            levelCheck++;
         }
-        else if(checker1 == 50){
+        else if(checker1 >= 30 && checker1 <= 50) {
+            levelUp();
+            checker1 = checker1 + 20;
+            levelCheck++;
+        }
+        else if(checker1 > 50){
+            levelUp();
             checker1 = checker1 +50;
+            levelCheck++;
         }
     }
 
 }
 void MotherloadScene::levelUp() {
-    level++;
-    money = money - levelCost;
-    fuelDrainSpeed = fuelDrainSpeed *2;
-    scoreMultiplier ++;
+        level++;
+        money = money - levelCost;
+        levelCost = levelCost +2;
+        fuelCost++;
+        fuelDrainSpeed++;
+        scoreMultiplier++;
 
-/*
-    foregroundPalette -> blue(150);
-    foregroundPalette -> green( 150);
-    foregroundPalette-> red(50);
-
-    SpriteBuilder<AffineSprite> affineBuilder;
-    std::unique_ptr<Sprite> newPlayer;
-
-    newPlayer = affineBuilder
-            .withData(digger, sizeof(digger))
-            .withSize(SIZE_32_32)
-            .withLocation(scrollX, scrollY)
-            .buildPtr();
-    player -> update();
-
-*/
 }

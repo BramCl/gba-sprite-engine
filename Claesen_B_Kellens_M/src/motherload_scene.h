@@ -90,7 +90,7 @@ private:
     u16 map[MAP_SIZE] = {};
     u16 fullMap[FULL_MAP_SIZE] = {};
 
-    int scrollX, scrollY, rotateA, lastUpdate, startMiningScrollX, startMiningScrollY, startMiningTimer, score, level, scoreMultiplier, levelCost;
+    int scrollX, scrollY, rotateA, lastUpdate, startMiningScrollX, startMiningScrollY, startMiningTimer, score, level, scoreMultiplier, levelCost, checker1, levelCheck,fuelCost;
     float money, fuel, fuelDrainSpeed;
     bool update, dead;
 public:
