@@ -27,8 +27,7 @@ void SampleStartScene::load() {
             .buildPtr();
 
     TextStream::instance().setText("Press any key to start", 8, 4);
-    TextStream::instance().setText("Frankenload", 6, 10);
-    TextStream::instance().setText("Frankenload", 6, 10);
+    TextStream::instance().setText("Motherload", 6, 10);
 
     engine->getTimer()->start();
 }
