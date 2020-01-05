@@ -1,5 +1,5 @@
 //
-// Created by maike on 8/12/2019.
+// Created by Maikel on 8/12/2019.
 //
 #include <libgba-sprite-engine/sprites/affine_sprite.h>
 #include <libgba-sprite-engine/sprites/sprite_builder.h>
@@ -60,18 +60,123 @@ void MotherloadScene::load() {
             .withLocation(10, 0)
             .buildPtr();
     seedRandomMap();
+
     bg = std::unique_ptr<Background>(new Background(1, dirt_bigTiles, sizeof(dirt_bigTiles), map, sizeof(map)));
 
     bg.get()->useMapScreenBlock(16);
 }
-bool MotherloadScene::blockIsClear(int x, int y) {
+void MotherloadScene::tick(u16 keys) {//Dit is eigenlijk de main loop van deze scene
+    player -> stopAnimating();
+    levelChecker();
+    if((scrollY % 8) == 0 && lastUpdate != scrollY){
+        update = true;
+        lastUpdate = scrollY;
+    }
+    if(update) {
+        updateMap();
+        update = !update;
+    }
+    fuel = fuel -0.003*fuelDrainSpeed;
+    if(fuel < 0){
+        dead = true;
+
+    }
+    if (dead){
+        if(score > 254){
+            *(sram_mem+1) = score / 255;
+        }
+        else{
+            *(sram_mem+1) = 0;
+        }
+        *sram_mem = score;
+        if(!engine->isTransitioning()) {
+            engine->transitionIntoScene(new GameOverScene(engine), new FadeOutScene(2));
+        }
+    }
+    TextStream::instance().setText("Score: " + std::to_string(score), 0, 18);
+    TextStream::instance().setText("Money: " + std::to_string((int) money), 1, 18);
+    TextStream::instance().setText("Level: " + std::to_string((int) level), 19, 18);
+    batteryUpdate();
+    upgradeByScore();
+    bg.get()->scroll(8, 0);
+    player->moveTo(104+scrollX,18);
+    bg.get()->updateMap(map);
+
+    if(0< player ->getX() <20 && scrollY ==0){ // toets X op toetsenbor
+        TextStream::instance().setText("press A/X to refuel", 2, 2);
+        if(keys & KEY_A){
+            if(money == 0){
+                TextStream::instance().setText("not enough money to refuel", 2, 2);
+            }
+            refuel();
+        }
+    }
+    else{
+        TextStream::instance().setText("", 2, 2);
+    }
+    if (keys & KEY_LEFT && scrollX>-110) {
+        if (blockIsClear(14, 4) && blockIsClear(14,5)) {
+            scrollX -= 2;
+            player->animateToFrame(0);
+        }
+        else if (blockIsMineable(14,4) && blockIsMineable(13,4) && blockIsMineable(14,5) && blockIsMineable(13,5) && !blockIsClear(15,6) && !blockIsClear(16,6)) {
+            mineBlock(13,4, keys);
+        }
+    }
+    if (keys & KEY_RIGHT) {
+        if (blockIsClear(17, 4) && blockIsClear(17, 5)) {
+            scrollX += 2;
+            player->animateToFrame(2);
+        }
+        else if (blockIsMineable(17,4) && blockIsMineable(18,4) && blockIsMineable(17,5) && blockIsMineable(18,5) && !blockIsClear(15,6) && !blockIsClear(16,6)) {
+            mineBlock(17,4, keys);
+        }
+    }
+    if (keys & KEY_UP) {
+        if (blockIsClear(15, 3) && blockIsClear(16,3)) {
+            scrollY -= 2;
+            player->animateToFrame(1);
+            fuel = fuel - FUEL_DRAIN_SPEED_FLYING;
+            auto frame = player->getCurrentFrame();
+            if(frame == 1 || frame == 10 ||frame == 11) {
+                player->makeAnimated(10, 2, 5);
+
+            }
+        }
+    }
+    if(!keys){ //wanneer er geen knop is ingedrukt, moet dit geforward worden naar de mineBlock functie, zo kan deze z'n timer resetten.
+        mineBlock(15,6,keys);
+    }
+    if((blockIsClear(15,6) && blockIsClear(16,6))) {
+        if (keys & KEY_DOWN) {
+            scrollY += 1;
+            player->animateToFrame(3);
+        }
+        scrollY += 1;
+    }
+    if(fullMap[(15 + scrollX / 8) + ((6 + scrollY / 8) * MAP_WIDTH)] == LAVA_LB && fullMap[(16 + scrollX / 8) + ((6 + scrollY / 8) * MAP_WIDTH)] == LAVA_RB){
+        dead = true;
+    }
+    if(keys & KEY_DOWN){
+        while((15 + scrollX / 8)%2 != 0){
+            scrollX--;
+        }
+
+        if (blockIsMineable(15,6) && blockIsMineable(16,6) && blockIsMineable(15,7) && blockIsMineable(16,7) && !blockIsClear(15,6) && !blockIsClear(16,6)) {
+            mineBlock(15,6, keys);
+        }
+    }
+    if(scrollY < 0){
+        scrollY = 0;
+    }
+}
+bool MotherloadScene::blockIsClear(int x, int y) {//Bekijkt of een bepaalde blok vrij is om naartoe te bewegen
     if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE) {
         return true;
     } else
         return fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == AIR;
 }
-bool MotherloadScene::blockIsMineable(int x, int y){
-
+bool MotherloadScene::blockIsMineable(int x, int y){//Bekijkt of het mogelijk is om een bepaalde blok op te minen
     if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == AIR) {
         return false;
     } else if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE) {
@@ -84,8 +189,7 @@ bool MotherloadScene::blockIsMineable(int x, int y){
         return false;
     } else return fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] != STONE_RO;
 }
-void MotherloadScene::seedRandomMap() {
-
+void MotherloadScene::seedRandomMap() {//Maakt een pseudo random map met de juiste percentages van iedere blok
     for (int x = 0; x < MAP_WIDTH; x += 2) {
         for (int y = 6; y < FULL_MAP_HEIGHT; y += 2) {
             if (y == 254) {
@@ -174,12 +278,12 @@ void MotherloadScene::seedRandomMap() {
 
 
 }
-void MotherloadScene::updateMap(){
+void MotherloadScene::updateMap(){//Zorgt dat de juiste scope uit de grote map array wordt geprojecteerd in de zichtbare map
     for(int i = 0; i <MAP_SIZE; i++){
         map[i]= fullMap[i+(scrollY/8)*MAP_WIDTH];
     }
 }
-void MotherloadScene::mineBlock(int x, int y, u16 keys) {
+void MotherloadScene::mineBlock(int x, int y, u16 keys) {//Regelt alles wat er bij komt kijken om een block te minen, minesnelheid, geld, score, doodgaan
     if(!keys){
         startMiningTimer = engine->getTimer()->getTotalMsecs();
         return;
@@ -265,124 +369,19 @@ void MotherloadScene::mineBlock(int x, int y, u16 keys) {
         updateMap();
     }
 }
-void MotherloadScene::tick(u16 keys) {
-    player -> stopAnimating();
-    levelChecker();
-    if((scrollY % 8) == 0 && lastUpdate != scrollY){
-        update = true;
-        lastUpdate = scrollY;
-    }
-    if(update) {
-        updateMap();
-        update = !update;
-    }
-    fuel = fuel -0.003*fuelDrainSpeed;
-    if(fuel < 0){
-        dead = true;
-
-    }
-    if (dead){
-        if(score > 254){
-            *(sram_mem+1) = score / 255;
-        }
-        else{
-            *(sram_mem+1) = 0;
-        }
-        *sram_mem = score;
-        if(!engine->isTransitioning()) {
-            engine->transitionIntoScene(new GameOverScene(engine), new FadeOutScene(2));
-        }
-    }
-    TextStream::instance().setText("Score: " + std::to_string(score), 0, 18);
-    TextStream::instance().setText("Money: " + std::to_string((int) money), 1, 18);
-    TextStream::instance().setText("Level: " + std::to_string((int) level), 19, 18);
-    batteryUpdate();
-    upgradeByScore();
-    bg.get()->scroll(8, 0);
-    player->moveTo(104+scrollX,18);
-    bg.get()->updateMap(map);
-
-    if(0< player ->getX() <20 && scrollY ==0){ // toets X op toetsenbor
-        TextStream::instance().setText("press A/x to refuel", 2, 2);
-        if(keys & KEY_A){
-            if(money == 0){
-                TextStream::instance().setText("not enough money to refuel", 2, 2);
-            }
-            refuel();
-        }
-    }
-    else{
-        TextStream::instance().setText("", 2, 2);
-    }
-    if (keys & KEY_LEFT && scrollX>-110) {
-        if (blockIsClear(14, 4) && blockIsClear(14,5)) {
-            scrollX -= 2;
-            player->animateToFrame(0);
-        }
-        else if (blockIsMineable(14,4) && blockIsMineable(13,4) && blockIsMineable(14,5) && blockIsMineable(13,5) && !blockIsClear(15,6) && !blockIsClear(16,6)) {
-            mineBlock(13,4, keys);
-        }
-    }
-    if (keys & KEY_RIGHT) {
-        if (blockIsClear(17, 4) && blockIsClear(17, 5)) {
-            scrollX += 2;
-            player->animateToFrame(2);
-        }
-        else if (blockIsMineable(17,4) && blockIsMineable(18,4) && blockIsMineable(17,5) && blockIsMineable(18,5) && !blockIsClear(15,6) && !blockIsClear(16,6)) {
-            mineBlock(17,4, keys);
-        }
-    }
-    if (keys & KEY_UP) {
-        if (blockIsClear(15, 3) && blockIsClear(16,3)) {
-            scrollY -= 2;
-            player->animateToFrame(1);
-            fuel = fuel - FUEL_DRAIN_SPEED_FLYING;
-            auto frame = player->getCurrentFrame();
-            if(frame == 1 || frame == 10 ||frame == 11) {
-                player->makeAnimated(10, 2, 5);
-
-            }
-        }
-    }
-    if(!keys){ //wanneer er geen knop is ingedrukt, moet dit geforward worden naar de mineBlock functie, zo kan deze z'n timer resetten.
-        mineBlock(15,6,keys);
-    }
-    if((blockIsClear(15,6) && blockIsClear(16,6))) {
-        if (keys & KEY_DOWN) {
-            scrollY += 1;
-            player->animateToFrame(3);
-        }
-        scrollY += 1;
-    }
-    if(fullMap[(15 + scrollX / 8) + ((6 + scrollY / 8) * MAP_WIDTH)] == LAVA_LB && fullMap[(16 + scrollX / 8) + ((6 + scrollY / 8) * MAP_WIDTH)] == LAVA_RB){
-        dead = true;
-    }
-    if(keys & KEY_DOWN){
-        while((15 + scrollX / 8)%2 != 0){
-            scrollX--;
-        }
-
-        if (blockIsMineable(15,6) && blockIsMineable(16,6) && blockIsMineable(15,7) && blockIsMineable(16,7) && !blockIsClear(15,6) && !blockIsClear(16,6)) {
-            mineBlock(15,6, keys);
-        }
-    }
-    if(scrollY < 0){
-        scrollY = 0;
-    }
-}
-void MotherloadScene::addScore(int points) {
+void MotherloadScene::addScore(int points) {//Score verhogen met een bepaald aantal
     score = score + (points*scoreMultiplier);
 }
-void MotherloadScene::addMoney(float money){
+void MotherloadScene::addMoney(float money){//Geld verhogen met een bepaald aantal
     this -> money  = this->money + money;
 }
-void MotherloadScene::refuel(){
+void MotherloadScene::refuel(){//Refuelen en geld betalen er voor
     if(fuel < 100 && money > 0){
         fuel = fuel  + 0.5;
         money = money -(0.025*fuelCost);
     }
 }
-void MotherloadScene::batteryUpdate(){
+void MotherloadScene::batteryUpdate(){//Managed de batterij sprite
     if(fuel >95) batterySprite-> animateToFrame(0);
     else if(90< fuel && fuel < 95) batterySprite -> animateToFrame(1);
     else if(80< fuel && fuel < 90) batterySprite -> animateToFrame(2);
@@ -395,7 +394,7 @@ void MotherloadScene::batteryUpdate(){
     else if(10< fuel && fuel < 20) batterySprite -> animateToFrame(9);
     else if(0< fuel && fuel < 10) batterySprite -> animateToFrame(10);
 }
-void MotherloadScene::upgradeByScore(){
+void MotherloadScene::upgradeByScore(){//Upgrade het ventje bij bepaalde scores
     if(score == 10){
         fuelDrainSpeed = 8;
     }
@@ -412,10 +411,8 @@ void MotherloadScene::upgradeByScore(){
         fuelDrainSpeed = 1;
     }
 }
-
-void MotherloadScene::levelChecker(){
-
-    if(score> checker1 && level == levelCheck && (money - levelCost >5)){
+void MotherloadScene::levelChecker(){//Kijkt of het mogelijk is om level up te gaan, dit kan enkel als er genoeg score is behaald en genoeg geld beschikbaar is
+    if(score > checker1 && level == levelCheck && (money - levelCost >5)){
         if(checker1 < 30) {
             levelUp();
             checker1 = checker1 + 10;
@@ -434,7 +431,7 @@ void MotherloadScene::levelChecker(){
     }
 
 }
-void MotherloadScene::levelUp() {
+void MotherloadScene::levelUp() {//Verhoogt alles wat verhoogt moet worden bij een level up
         level++;
         money = money - levelCost;
         levelCost = levelCost +2;

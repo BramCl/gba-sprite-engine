@@ -1,5 +1,5 @@
 //
-// Created by maike on 8/12/2019.
+// Created by Maikel on 8/12/2019.
 //
 
 #include <libgba-sprite-engine/sprites/sprite_builder.h>
@@ -10,12 +10,9 @@
 #include "instruction_scene.h"
 #include "digger.h"
 
-
-
 std::vector<Background *> SampleStartScene::backgrounds() {
     return {};
 }
-
 std::vector<Sprite *> SampleStartScene::sprites() {
     return {  animation.get() };
 }
@@ -35,9 +32,8 @@ void SampleStartScene::load() {
 
     engine->getTimer()->start();
 }
-
 void SampleStartScene::tick(u16 keys) {
-    if(keys) {
+    if(keys) {//Start de instructies als er op een toets wordt gedrukt
         if(!engine->isTransitioning()) {
             engine->transitionIntoScene(new InstructionScene(engine), new FadeOutScene(4));
         }
