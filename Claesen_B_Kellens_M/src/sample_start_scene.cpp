@@ -9,8 +9,10 @@
 #include <libgba-sprite-engine/effects/fade_out_scene.h>
 #include "sample_start_scene.h"
 #include "motherload_scene.h"
+#include "instruction_scene.h"
 #include "gameOverScene.h"
 #include "digger.h"
+
 
 
 std::vector<Background *> SampleStartScene::backgrounds() {
@@ -33,7 +35,7 @@ void SampleStartScene::load() {
 
     TextStream::instance().setText("Press any key to start", 8, 4);
     TextStream::instance().setText("Frankenload", 6, 10);
-
+    TextStream::instance().setText("Frankenload", 6, 10);
 
     engine->getTimer()->start();
 }
@@ -41,7 +43,7 @@ void SampleStartScene::load() {
 void SampleStartScene::tick(u16 keys) {
     if(keys) {
         if(!engine->isTransitioning()) {
-            engine->transitionIntoScene(new MotherloadScene(engine), new FadeOutScene(2));
+            engine->transitionIntoScene(new InstructionScene(engine), new FadeOutScene(4));
         }
     }
 
