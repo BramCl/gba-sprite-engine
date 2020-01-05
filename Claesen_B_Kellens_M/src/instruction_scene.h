@@ -28,7 +28,4 @@ public:
 
 };
 
-
-
-
 #endif //GBA_SPRITE_ENGINE_PROJECT_INSTRUCTION_SCENE_H

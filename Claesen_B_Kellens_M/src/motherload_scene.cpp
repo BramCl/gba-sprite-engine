@@ -7,13 +7,10 @@
 #include <libgba-sprite-engine/background/text_stream.h>
 #include <libgba-sprite-engine/gba/tonc_memdef.h>
 #include <libgba-sprite-engine/gba_engine.h>
-#include "motherload_scene.h"
-
-#include <libgba-sprite-engine/gba/tonc_core.h>
 #include <libgba-sprite-engine/effects/fade_out_scene.h>
 
-#include "character_onbewerkt_transparant_16.h"
-#include "kul.h"
+#include "baseMap.h"
+#include "motherload_scene.h"
 #include "backgroundblocks.h"
 #include "digger.h"
 #include "gameOverScene.h"
@@ -74,16 +71,8 @@ bool MotherloadScene::blockIsClear(int x, int y) {
         return fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == AIR;
 }
 bool MotherloadScene::blockIsMineable(int x, int y){
-    /*
-    if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == LAVA_LB) {
-        return false;
-    } else if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == LAVA_LO) {
-        return false;
-    } else if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == LAVA_RB) {
-        return false;
-    } else if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == LAVA_RO) {
-        return false;
-    } else */if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == AIR) {
+
+    if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == AIR) {
         return false;
     } else if (fullMap[(x + scrollX / 8) + (y + scrollY / 8) * MAP_WIDTH] == BROWNBGTILE) {
         return false;

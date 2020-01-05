@@ -24,7 +24,7 @@ std::vector<Sprite *> GameOverScene::sprites() {
 void GameOverScene::load() {
     backgroundPalette = std::unique_ptr<BackgroundPaletteManager>(new BackgroundPaletteManager());
 
-    //standaard zit er 255 in de geheugens blijkbaar, da clean in naar 0 zodat er geen fake highscores ontstaan
+    //standaard zit er 255 in de geheugens, dit naar 0 veranderen zodat er geen fake highscore is.
     for(int i = 0; i < 22; i++){
         if(*(sram_mem+i) == 255){
             *(sram_mem+i) = 0;

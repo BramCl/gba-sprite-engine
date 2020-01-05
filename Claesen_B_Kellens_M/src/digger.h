@@ -17,8 +17,6 @@ const unsigned short diggerPal[114] __attribute__((aligned(4)))
                 0x31AF,0x0C84,0x35D0,0x2DCE,0x4210,0x1085,0x296B,0x31CF,
                 0x4211,
         };
-
-//}}BLOCK(shared)
 const unsigned int battery[384] __attribute__((aligned(4)))
         {
                 0x00000000,0x00000000,0x12121200,0x12121212,0x10101200,0x10101010,0x10101200,0x10101010,
@@ -75,23 +73,6 @@ const unsigned int battery[384] __attribute__((aligned(4)))
                 0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,
                 0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,
         };
-
-//}}BLOCK(batteryl__2_)
-
-
-//{{BLOCK(character_onbewerkt_transparant_32__7_)
-
-//======================================================================
-//
-//	character_onbewerkt_transparant_32__7_, 32x384@8,
-//	+ 192 tiles not compressed
-//	Total size: 12288 = 12288
-//
-//	Time-stamp: 2019-12-27, 20:40:14
-//	Exported by Cearn's GBA Image Transmogrifier, v0.8.15
-//	( http://www.coranac.com/projects/#grit )
-//
-//======================================================================
 
 const unsigned int digger[3072] __attribute__((aligned(4)))
         {
@@ -528,4 +509,3 @@ const unsigned int digger[3072] __attribute__((aligned(4)))
                 0x00004037,0x00000000,0x00004E4E,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,
         };
 
-//}}BLOCK(character_onbewerkt_transparant_32__7_)

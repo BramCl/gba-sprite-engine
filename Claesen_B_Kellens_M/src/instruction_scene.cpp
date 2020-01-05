@@ -9,8 +9,6 @@
 #include <libgba-sprite-engine/effects/fade_out_scene.h>
 #include "instruction_scene.h"
 #include "motherload_scene.h"
-#include "sample_start_scene.h"
-#include "gameOverScene.h"
 #include "digger.h"
 
 

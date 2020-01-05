@@ -26,5 +26,4 @@ public:
 
 };
 
-
 #endif //GBA_SPRITE_ENGINE_SAMPLE_START_SCENE_H
