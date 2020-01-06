@@ -18,10 +18,12 @@ add_definitions(-DCODE_COMPILED_AS_PART_OF_TEST)
 
 include_directories(${GTEST_LIBRARY}/include)
 include_directories(../engine/include)
+include_directories(../Claesen_B_Kellens_M)
 
 # compile including library source because it's cross-compiled
 add_executable(unittest
         maintest.cpp
+        motherloadtest.cpp
         gbatest.cpp
         spritetest.cpp
         scenetest.cpp
@@ -37,6 +39,6 @@ add_executable(unittest
         ../engine/src/palette/combined_palette.cpp
         ../engine/src/timer.cpp
         ../engine/src/gbavector.cpp
-        timertest.cpp gbavectortest.cpp)
+        timertest.cpp gbavectortest.cpp motherloadtest.cpp)
 
 target_link_libraries(unittest ${GTEST_LIBRARY}/build/libgtest.a ${GTEST_LIBRARY}/build/libgtest_main.a)
