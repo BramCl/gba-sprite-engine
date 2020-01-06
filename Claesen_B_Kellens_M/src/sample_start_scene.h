@@ -1,5 +1,5 @@
 //
-// Created by maike on 8/12/2019.
+// Created by Maikel on 8/12/2019.
 //
 
 #ifndef GBA_SPRITE_ENGINE_PROJECT_SAMPLE_START_SCENE_H

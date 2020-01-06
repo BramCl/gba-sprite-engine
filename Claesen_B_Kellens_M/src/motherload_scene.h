@@ -1,5 +1,5 @@
 //
-// Created by maike on 8/12/2019.
+// Created by Maikel on 8/12/2019.
 //
 
 #ifndef GBA_SPRITE_ENGINE_PROJECT_MOTHERLOAD_SCENE_H
@@ -79,7 +79,6 @@
 #include <libgba-sprite-engine/scene.h>
 #include <libgba-sprite-engine/background/background.h>
 #include <libgba-sprite-engine/background/text_stream.h>
-
 
 class MotherloadScene : public Scene {
 private:

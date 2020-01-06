@@ -1,13 +1,9 @@
-
-
 //
-// Created by maike on 8/12/2019.
+// Created by Maikel on 8/12/2019.
 //
 
 #ifndef GBA_SPRITE_ENGINE_PROJECT_INSTRUCTION_SCENE_H
 #define GBA_SPRITE_ENGINE_PROJECT_INSTRUCTION_SCENE_H
-
-
 
 #include <libgba-sprite-engine/scene.h>
 

@@ -1,5 +1,5 @@
 //
-// Created by maike on 27/12/2019.
+// Created by Maikel on 27/12/2019.
 //
 
 #ifndef GBA_SPRITE_ENGINE_PROJECT_GAMEOVERSCENE_H
@@ -24,6 +24,5 @@ public:
     void calculateHighScores();
     void printHighScores();
 };
-
 
 #endif //GBA_SPRITE_ENGINE_PROJECT_GAMEOVERSCENE_H
