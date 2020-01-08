@@ -7,7 +7,7 @@ set(CMAKE_VERBOSE_MAKEFILE on)
 project(Unittest)
 enable_testing()
 
-SET(GTEST_LIBRARY "C:/Git/ProjectAPPI/googletest/googletest")
+SET(GTEST_LIBRARY "C:/Users/claes/googletest/googletest")
 
 # reset linker flags; ARM + GTest doesn't work
 SET(CMAKE_EXE_LINKER_FLAGS "${BASE_CMAKE_LINK_FLAGS}")
