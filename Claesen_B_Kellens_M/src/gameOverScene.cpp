@@ -5,7 +5,6 @@
 //te gebruiken zonder dat er dingen fout lopen zoals te kleine geheugens of overlappende date. (Dit werkt zolang de highscore niet te hoog is)
 #include <libgba-sprite-engine/sprites/sprite_builder.h>
 #include <libgba-sprite-engine/background/text_stream.h>
-#include <libgba-sprite-engine/gba/tonc_memdef.h>
 #include <libgba-sprite-engine/gba_engine.h>
 #include <libgba-sprite-engine/effects/fade_out_scene.h>
 #include "gameOverScene.h"
