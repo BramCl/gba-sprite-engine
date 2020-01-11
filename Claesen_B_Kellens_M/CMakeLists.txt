@@ -13,8 +13,7 @@ add_executable(${PROJECT_NAME}.elf
         src/gameOverScene.cpp
         src/gameOverScene.h
         src/instruction_scene.cpp
-        src/instruction_scene.h
-        test/motherloadtest.cpp)
+        src/instruction_scene.h)
 
 
 target_link_libraries(${PROJECT_NAME}.elf gba-sprite-engine)
