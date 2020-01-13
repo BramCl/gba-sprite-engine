@@ -6,7 +6,7 @@
 #include <libgba-sprite-engine/background/text_stream.h>
 #include <libgba-sprite-engine/gba_engine.h>
 #include <libgba-sprite-engine/effects/fade_out_scene.h>
-#include "sample_start_scene.h"
+#include "start_screen_scene.h"
 #include "instruction_scene.h"
 #include "digger.h"
 

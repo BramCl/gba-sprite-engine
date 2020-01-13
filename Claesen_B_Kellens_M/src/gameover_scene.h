@@ -2,8 +2,8 @@
 // Created by Maikel on 27/12/2019.
 //
 
-#ifndef GBA_SPRITE_ENGINE_PROJECT_GAMEOVERSCENE_H
-#define GBA_SPRITE_ENGINE_PROJECT_GAMEOVERSCENE_H
+#ifndef GBA_SPRITE_ENGINE_PROJECT_GAMEOVER_SCENE_H
+#define GBA_SPRITE_ENGINE_PROJECT_GAMEOVER_SCENE_H
 
 #include <libgba-sprite-engine/scene.h>
 
@@ -25,4 +25,4 @@ public:
     void printHighScores();
 };
 
-#endif //GBA_SPRITE_ENGINE_PROJECT_GAMEOVERSCENE_H
+#endif //GBA_SPRITE_ENGINE_PROJECT_GAMEOVER_SCENE_H

@@ -6,7 +6,7 @@
 #include <libgba-sprite-engine/allocator.h>
 
 #include "gtest/gtest.h"
-#include "sample_start_scene.h"
+#include "start_screen_scene.h"
 
 int main() {
     std::shared_ptr<GBAEngine> engine(new GBAEngine());

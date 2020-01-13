@@ -7,7 +7,7 @@
 #include <libgba-sprite-engine/background/text_stream.h>
 #include <libgba-sprite-engine/gba_engine.h>
 #include <libgba-sprite-engine/effects/fade_out_scene.h>
-#include "gameOverScene.h"
+#include "gameover_scene.h"
 #include "motherload_scene.h"
 #include "digger.h"
 #include "backgroundblocks.h"

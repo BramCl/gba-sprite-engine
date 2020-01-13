@@ -13,7 +13,7 @@
 #include "motherload_scene.h"
 #include "backgroundblocks.h"
 #include "digger.h"
-#include "gameOverScene.h"
+#include "gameover_scene.h"
 #include "drill_sound.h"
 
 
